@@ -1,11 +1,14 @@
 module Occurrence2 where
 
-open import Data.Product using (Σ; _,_)
 open import Data.Unit using (⊤; tt)
 open import Data.Integer using (ℤ; +_; -[1+_])
 open import Data.Nat using (ℕ; zero; suc)
 open import Data.Bool using (Bool; true; false; if_then_else_)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
+
+-- comment out exactly one of the following two lines
+--open import Data.Product using (Σ; _,_)
+open import Sigma using (Σ; _,_)
 
 isNat : ℤ → Bool
 isNat (+ _)      = true

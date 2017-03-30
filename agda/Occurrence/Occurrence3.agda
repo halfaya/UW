@@ -4,11 +4,14 @@ open import Data.Empty using (⊥)
 open import Function using (_∘_)
 open import Data.Integer using (ℤ; +_; -[1+_]; _+_)
 open import Data.Nat using (ℕ; zero; suc)
-open import Data.Product using (Σ; _,_)
 open import Data.Unit using (⊤; tt)
 open import Relation.Binary.PropositionalEquality using (_≡_; refl)
 open import Relation.Nullary using (Dec; yes; no)
 open import Relation.Nullary.Decidable using (True; toWitness; fromWitness)
+
+-- comment out exactly one of the following two lines
+--open import Data.Product using (Σ; _,_; proj₁; proj₂)
+open import Sigma using (Σ; _,_; proj₁; proj₂)
 
 -- Lemmas
 +0disjoint : Σ ℕ (λ n → + suc n ≡ + zero) → ⊥
@@ -38,7 +41,7 @@ Pos = Σ ℤ (λ z → True (isPos z))
 
 -- Coercions
 pos→nat : Pos → Nat
-pos→nat (z , p) = let (n , q) = toWitness p in (z , fromWitness (suc n , q))
+pos→nat (z , p) = let q = toWitness p in (z , fromWitness (suc (proj₁ q) , proj₂ q))
 
 nat→ℕ : Nat → ℕ
 nat→ℕ (+ n      , _) = n
