@@ -115,12 +115,65 @@ mutual
 ≤trans+1 : {m n p : ℕ} → m ≤ n → n ≤ p → m ≤ p + 1
 ≤trans+1 {p = p} x y rewrite +-comm p 1 = ls (≤trans x y)
 
-≤'-rec : (P : {m n : ℕ} → m ≤' n → Set)
+≤'-rec : (P : (m n : ℕ) → m ≤' n → Set)
+        → ((n : ℕ) → P n n (ln {n}))
+        → ((m n : ℕ) → (x : m ≤' n) → P m n x → P m (suc n) (ls x))
+        → ((m n : ℕ) → (x : m ≤' n) → P m n x)
+≤'-rec P fn fs m n       ln     = fn m
+≤'-rec P fn fs m (suc n) (ls x) = fs m n x (≤'-rec P fn fs m n x)
+
+{-
+-- Coq version
+
+Inductive le2 : nat -> nat -> Set :=
+| le2_n : forall n, le2 n n
+| le2_S : forall n m: nat, le2 n m -> le2 n (S m).
+
+
+le2_rect = 
+fun (P : forall n n0 : nat, le2 n n0 -> Type)
+  (f : forall n : nat, P n n (le2_n n))
+  (f0 : forall (n m : nat) (l : le2 n m), P n m l -> P n (S m) (le2_S n m l))
+=>
+fix F (n n0 : nat) (l : le2 n n0) {struct l} : P n n0 l :=
+  match l as l0 in (le2 n1 n2) return (P n1 n2 l0) with
+  | le2_n n1 => f n1
+  | le2_S n1 m l0 => f0 n1 m l0 (F n1 m l0)
+  end
+     : forall P : forall n n0 : nat, le2 n n0 -> Type,
+       (forall n : nat, P n n (le2_n n)) ->
+       (forall (n m : nat) (l : le2 n m), P n m l -> P n (S m) (le2_S n m l)) ->
+       forall (n n0 : nat) (l : le2 n n0), P n n0 l
+-}
+
+-- TODO: Fix this to correspond to Coq.
+≤'-ind : (P : {m n : ℕ} → m ≤' n → Set)
         → ({n : ℕ} → P (ln {n}))
         → ({m n : ℕ} → (x : m ≤' n) → P x → P (ls x))
         → ({m n : ℕ} → (x : m ≤' n) → P x)
-≤'-rec P n s ln     = n
-≤'-rec P n s (ls x) = s x (≤'-rec P n s x)
+≤'-ind P n s ln     = n
+≤'-ind P n s (ls x) = s x (≤'-ind P n s x)
+
+{-
+--- Coq version
+
+Inductive le2 : nat -> nat -> Prop :=
+| le2_n : forall n, le2 n n
+| le2_S : forall n m: nat, le2 n m -> le2 n (S m).
+
+le2_ind = 
+fun (P : nat -> nat -> Prop) (f : forall n : nat, P n n)
+  (f0 : forall n m : nat, le2 n m -> P n m -> P n (S m)) =>
+fix F (n n0 : nat) (l : le2 n n0) {struct l} : P n n0 :=
+  match l in (le2 n1 n2) return (P n1 n2) with
+  | le2_n n1 => f n1
+  | le2_S n1 m l0 => f0 n1 m l0 (F n1 m l0)
+  end
+     : forall P : nat -> nat -> Prop,
+       (forall n : nat, P n n) ->
+       (forall n m : nat, le2 n m -> P n m -> P n (S m)) ->
+       forall n n0 : nat, le2 n n0 -> P n n0
+-}
 
 ----------
 

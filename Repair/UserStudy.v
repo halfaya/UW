@@ -22,6 +22,13 @@ Require Import Coq.Lists.List.
 
 Print le.
 
+Inductive le2 : nat -> nat -> Set :=
+| le2_n : forall n, le2 n n
+| le2_S : forall n m: nat, le2 n m -> le2 n (S m).
+
+Print le2_rect.
+
+Print nat_ind.
 
 (* ORIGINAL *)
 Theorem le_trans :
