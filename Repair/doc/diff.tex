@@ -1,0 +1,978 @@
+\documentclass[acmlarge,fleqn]{acmart}\settopmatter{}
+
+%% Note: Authors migrating a paper from PACMPL format to traditional
+%% SIGPLAN proceedings format should change 'acmlarge' to
+%% 'sigplan,10pt'.
+
+
+%% Some recommended packages.
+\usepackage{booktabs}   %% For formal tables:
+                        %% http://ctan.org/pkg/booktabs
+\usepackage{subcaption} %% For complex figures with subfigures/subcaptions
+                        %% http://ctan.org/pkg/subcaption
+\usepackage{mathpartir}
+
+
+\makeatletter\if@ACM@journal\makeatother
+%% Journal information (used by PACMPL format)
+%% Supplied to authors by publisher for camera-ready submission
+\acmJournal{PACMPL}
+\acmVolume{1}
+\acmNumber{1}
+\acmArticle{1}
+\acmYear{2017}
+\acmMonth{1}
+\acmDOI{10.1145/nnnnnnn.nnnnnnn}
+\startPage{1}
+\else\makeatother
+%% Conference information (used by SIGPLAN proceedings format)
+%% Supplied to authors by publisher for camera-ready submission
+\acmConference[PL'18]{ACM SIGPLAN Conference on Programming Languages}{January 01--03, 2018}{New York, NY, USA}
+\acmYear{2018}
+\acmISBN{978-x-xxxx-xxxx-x/YY/MM}
+\acmDOI{10.1145/nnnnnnn.nnnnnnn}
+\startPage{1}
+\fi
+
+
+%% Copyright information
+%% Supplied to authors (based on authors' rights management selection;
+%% see authors.acm.org) by publisher for camera-ready submission
+\setcopyright{none}             %% For review submission
+%\setcopyright{acmcopyright}
+%\setcopyright{acmlicensed}
+%\setcopyright{rightsretained}
+%\copyrightyear{2017}           %% If different from \acmYear
+
+
+%% Bibliography style
+\bibliographystyle{ACM-Reference-Format}
+%% Citation style
+%% Note: author/year citations are required for papers published as an
+%% issue of PACMPL.
+\citestyle{acmauthoryear}   %% For author/year citations
+
+\RequirePackage{ifthen}
+\RequirePackage{amssymb}
+\RequirePackage{amsfonts}
+\RequirePackage{stmaryrd} % \shortuparrow
+
+
+\input{macros}
+
+% COVERED by option fleqn:
+%
+% controlling flushleft/center for math displays
+% http://www.golatex.de/wechsel-zwischen-leqno-und-reqno-fleqn-uvm-t2488.html
+\makeatletter
+%\def\leqn{\tagsleft@true}
+%\def\reqn{\tagsleft@false}
+\def\fleq{\@fleqntrue\let\mathindent\@mathmargin \@mathmargin=\leftmargini}
+\def\cneq{\@fleqnfalse}
+\g@addto@macro{\endsubequations}{\addtocounter{equation}{-1}}
+\makeatother
+
+\begin{document}
+
+%% Title information
+\title[Type Differences]{Differences of Types}         %% [Short Title] is optional;
+                                        %% when present, will be used in
+                                        %% header instead of Full Title.
+\titlenote{with title note}             %% \titlenote is optional;
+                                        %% can be repeated if necessary;
+                                        %% contents suppressed with 'anonymous'
+\subtitle{Subtitle}                     %% \subtitle is optional
+\subtitlenote{with subtitle note}       %% \subtitlenote is optional;
+                                        %% can be repeated if necessary;
+                                        %% contents suppressed with 'anonymous'
+
+
+%% Author information
+%% Contents and number of authors suppressed with 'anonymous'.
+%% Each author should be introduced by \author, followed by
+%% \authornote (optional), \orcid (optional), \affiliation, and
+%% \email.
+%% An author may have multiple affiliations and/or emails; repeat the
+%% appropriate command.
+%% Many elements are not rendered, but should be provided for metadata
+%% extraction tools.
+
+%% Author with single affiliation.
+\author{John Leo}
+\authornote{with author1 note}          %% \authornote is optional;
+                                        %% can be repeated if necessary
+\orcid{nnnn-nnnn-nnnn-nnnn}             %% \orcid is optional
+\affiliation{
+  \position{Position1}
+  \department{Department1}              %% \department is recommended
+  \institution{Halfaya Research}            %% \institution is required
+  \streetaddress{Street1 Address1}
+  \city{City1}
+  \state{State1}
+  \postcode{Post-Code1}
+  \country{Country1}
+}
+\email{leo@halfaya.org}          %% \email is recommended
+
+%% Author with two affiliations and emails.
+\author{First2 Last2}
+\authornote{with author2 note}          %% \authornote is optional;
+                                        %% can be repeated if necessary
+\orcid{nnnn-nnnn-nnnn-nnnn}             %% \orcid is optional
+\affiliation{
+  \position{Position2a}
+  \department{Department2a}             %% \department is recommended
+  \institution{Institution2a}           %% \institution is required
+  \streetaddress{Street2a Address2a}
+  \city{City2a}
+  \state{State2a}
+  \postcode{Post-Code2a}
+  \country{Country2a}
+}
+\email{first2.last2@inst2a.com}         %% \email is recommended
+\affiliation{
+  \position{Position2b}
+  \department{Department2b}             %% \department is recommended
+  \institution{Institution2b}           %% \institution is required
+  \streetaddress{Street3b Address2b}
+  \city{City2b}
+  \state{State2b}
+  \postcode{Post-Code2b}
+  \country{Country2b}
+}
+\email{first2.last2@inst2b.org}         %% \email is recommended
+
+
+%% Paper note
+%% The \thanks command may be used to create a "paper note" ---
+%% similar to a title note or an author note, but not explicitly
+%% associated with a particular element.  It will appear immediately
+%% above the permission/copyright statement.
+\thanks{with paper note}                %% \thanks is optional
+                                        %% can be repeated if necesary
+                                        %% contents suppressed with 'anonymous'
+
+
+%% Abstract
+%% Note: \begin{abstract}...\end{abstract} environment must come
+%% before \maketitle command
+\begin{abstract}
+See Introduction.
+\end{abstract}
+
+
+%% 2012 ACM Computing Classification System (CSS) concepts
+%% Generate at 'http://dl.acm.org/ccs/ccs.cfm'.
+\begin{CCSXML}
+<ccs2012>
+<concept>
+<concept_id>10011007.10011006.10011008</concept_id>
+<concept_desc>Software and its engineering~General programming languages</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10003456.10003457.10003521.10003525</concept_id>
+<concept_desc>Social and professional topics~History of programming languages</concept_desc>
+<concept_significance>300</concept_significance>
+</concept>
+</ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Software and its engineering~General programming languages}
+\ccsdesc[300]{Social and professional topics~History of programming languages}
+%% End of generated code
+
+
+%% Keywords
+%% comma separated list
+\keywords{Agda, Coq, dependent types, algebra of programming}  %% \keywords is optional
+
+
+%% \maketitle
+%% Note: \maketitle command must come after title commands, author
+%% commands, abstract environment, Computing Classification System
+%% environment and commands, and keywords command.
+\maketitle
+
+
+\section{Introduction}
+
+This document is a place to record my thoughts on the Coq proof
+repair project headed by Talia Ringer, Nate Yazdani, and Dan
+Grossman.  Everything in it is preliminary.
+
+\section{Differences of Types}
+
+Dependently-typed functional programs and mathematical objects which
+can be manipulated algebraically.  One algebraic operation that can be
+performed is to take the difference of two types.  Given types $A : T$
+and $B : T$ of the same sort $T$ this difference $B - A$ can be
+expressed as a function from $A$ to $B$:
+\[
+f : A \to B
+\]
+
+This is perhaps not very interesting, and of course not in general
+unique.  We can also look at the difference between two terms of
+different types.  Given $a : A$ and $b : B$, express $b-a$ as
+\[
+f_{ab} : A \to B \ni f(a) = b
+\]
+This function is again not unique in general, and in fact always has
+the trivial solution $f_{ab}(\_) = b)$.
+
+The existence of $a$ should provide some help in calculating $b$.  We
+would like to capture somehow the notion of using $a$ ``maximally'',
+and then defining $b-a$ to be the function that thus takes the minimal
+amount of effort to go from $a$ to $b$.
+
+Given that $a$ and $b$ are themselves algebraic structures, it should
+be possible to quantify the size of a term as either the size or depth
+of its AST.  Denote $|b|$ as the size of $b$.  Our definition of $b-a$
+could then be a function $f_{ab} : A \to B$ such that $|f_{ab}(a)|$ is
+minimal, where we set $|a|$ to be $1$.
+
+Note that we do not say what happens when the argument to $f_{ab}$ is
+not $a$.  We could arbitrarily set the output to $b$ always in this
+case.  More interesting would be to handle any term of type $A$, using
+only information about the types $A$ and $B$.  In this case we could
+define $B - A$ to be any function $f : A \to B$ that minimizes
+$|f(a)|$ for all $a \in A$, if such a function exists.
+
+\section{Examples}
+
+
+
+\iffalse
+\section{NOTE}
+
+The following sections are from the Core Agda Specification and should be ignored.
+
+\section{Syntax}
+\label{sec:syntax}
+
+\subsection{Terms}
+
+We distinguish global names $f,F,D,c,R,\pi$ bound in the signature $\Sigma$ from
+local variables $x,y,z$ bound in typing contexts $\Gamma$.  Local
+variables are represented by de Bruijn indices in the implementation,
+but for the sake of readability we stick to a named presentation here.
+We silently rename bound variables to avoid clashes with free variables
+(Barendregt convention).  We write $x \# E$ (``$x$ fresh for $E$'')
+to express that $x$ is a
+fresh variable with regard to syntactic entity $E$.
+
+For orientation of the reader, we use different letters to represent
+different purposes of global names.  However, they share the same name
+space and are not distinguished syntactically.
+\[
+\begin{array}{l@{\hspace{2cm}}l}
+  D & \text{data type name} \\
+  R & \text{record type name} \\
+  F & \text{data type or record type name} \\
+  f & \text{function name} \\
+\pi & \text{projection name  (overloaded)} \\
+  c & \text{data/record constructor name (overloaded)} \\
+\end{array}
+\]
+Projection and constructor names can be overloaded and are resolved by
+the type checker.  We write $R.\pi$ for a resolved record projection
+name, $R.c$ for a resolved record constructor name and $D.c$ for a
+resolved data constructor name.
+
+\emph{Terms} use a spine form for eliminations and thus are kept $\beta$ and
+projection normal form.  This means that terms cannot be a
+$\beta$-redex $(\lambda x.\,v)\,u$ nor a projection of a record value
+$\cpi\,\vec v\,.\pi$.
+\[
+\begin{array}{lrl@{\hspace{2cm}}l}
+t, u, v
+  &::=& x\; \bar{e}      & \text{variables (eliminated by $\bar{e}$)} \\
+  & | & f\; \bar{e}      & \text{defined function (eliminated by $\bar{e}$), includes postulates} \\
+  & | & c\; \bar{v}      & \text{data constructor applied to arguments $\bar{v}$} \\
+  & | & \cpi\; \bar{v}   & \text{record constructor with fields $\vec\pi$ applied to arguments $\bar{v}$} \\
+  & | & \lambda x.\, v   & \text{lambda abstraction} \\
+  & | & F\; \bar{v}      & \text{data/record type name applied to arguments $\bar v$} \\
+  & | & \funT x U V      & \text{dependent function type} \\
+  & | & s                & \text{Sort} \\
+\end{array}
+\]
+We use uppercase letters $T,U,V$ for terms that stand for types.
+
+\emph{Eliminations} $e$ exists for functions and records.
+Functions are eliminated by application, records by projection.
+\[
+\begin{array}{lrl@{\hspace{2cm}}l}
+e &::=& @u               & \text{application to term $u$} \\
+  & | & .\pi             & \text{taking projection $\pi$} \\
+\end{array}
+\]
+Other forms of elimination, like definiting a function by cases over
+some data structure, need pattern matching, which is supported in
+function declarations, but not in terms directly.
+
+\emph{Sorts} $s$ are the types of types.
+Here, we model a predicative hierarchy of universes $\Set_0 : \Set_1 : \Set_2 : \dots$.
+\[
+\begin{array}{lrl@{\hspace{2cm}}l}
+s & ::= & \Set_n         &  \text{universe of types of level $n \in \NN$} \\
+\end{array}
+\]
+We define \emph{sort supremum} \fbox{$s \sqcup s'$} by $\Set_i \sqcup \Set_j = \Set_{\max(i,j)}$.
+
+
+\subsection{Telescopes and patterns}
+
+\emph{Telescopes} $\Delta$ are like typing contexts $\Gamma$ (see below), but right-associative.
+Telescopes are used \eg{} for parameter lists in declarations.
+\[
+\begin{array}{lrl@{\hspace{2cm}}l}
+\Delta &::=& \cempty       & \text{empty telescope} \\
+       &  |& (x : T)\Delta & \text{non-empty telescope; $\Delta$ can depend on $x$} \\
+\end{array}
+\]
+Notation: iterated function types \fbox{$\Delta \to T$}, defined by recursion on $\Delta$:
+\[
+\begin{array}{rrl@{\hspace{2cm}}l}
+\cempty \to T       &=& T &\\
+(x : U)\Delta \to T &=& (x : U) \to (\Delta \to T) & \\
+\end{array}
+\]
+
+\emph{Patterns} $p$ are used for definition by cases.
+Patterns are made from variables $x$ and data constructors $c$,
+but can also contain arbitrary terms $u$ that do not bind any variables.
+The latter form is called \emph{inaccessible} pattern, or, due to the
+concrete syntax used in Agda, \emph{dot} pattern.
+\[
+\begin{array}{lrl@{\hspace{2cm}}l}
+p &::=& x              &   \text{variable pattern} \\
+  & | & c\; \bar{p}    &   \text{constructor pattern} \\
+  & | & \dotp u        &   \text{inaccessible pattern (aka dot pattern)} \\
+\end{array}
+\]
+
+\emph{Copatterns} are to eliminations what patterns are to arguments.
+We match eliminations against copatterns like we match arguments against patterns.
+\[
+\begin{array}{lrl@{\hspace{2cm}}l}
+q &::= & @p   & \text{application pattern} \\
+  &  | & .\pi & \text{projection  pattern}\\
+\end{array}
+\]
+
+\subsection{Declarations}
+\label{sec:declarations}
+
+Agda has three main \emph{declaration} forms that introduce global names into
+the signature $\Sigma$.  Function declarations introduce global
+functions $f$ defined by pattern matching.  A function declaration
+consists of a type signature $\vts$ and a list of function clauses
+$\vec\vcl$.  The signature has to preceed the clauses, but between
+them other declarations are allowed, in order to facilitate mutually
+recursive definitions.  Data (type) declarations consist of a data
+signature $\vds$ and a data definition $\vdd$, which have to appear in
+this order but can also be appart, to realize inductive-recursive
+definitions, for instance.  Similarly record (type) declarations
+consist of a record signature $\vrs$ and a record declaration $\vrd$.
+\[
+\begin{array}{lrl@{\hspace{2cm}}l}
+d  & ::=  & \mathit{ts} & \mbox{type signature}
+\\ & \mid & \mathit{cl} & \mbox{function clause}
+\\ & \mid & \mathit{ds} & \mbox{data signature}
+\\ & \mid & \mathit{dd} & \mbox{data definition}
+\\ & \mid & \mathit{rs} & \mbox{record signature}
+\\ & \mid & \mathit{rd} & \mbox{record definition}.
+\end{array}
+ \]
+
+\emph{Type signatures} consist of a global name $f$ for the function and its type $T$.
+\[\begin{array}{lrll}
+ts &::=& f : T &\\
+\end{array} \]
+A \emph{function clause} for $f$ consists of a copattern spine $\vec q$ and a right hand side $\vrhs$.
+The pattern variables of $\vec q$ are bound in context $\Gamma$.
+The right hand side is either empty or has evidence that the case is impossible.
+\[
+\begin{array}{lrll}
+cl &::=& \Gamma \rhd f\; \bar{q} : U \; = \vrhs  &\\
+\vrhs & ::= & t & \text{term (clause body)}\\
+      & \mid& \absurd \vec x  & (\vec x \not=\emptyset)
+      \text{ absurd clause (each variable $x_i$ has empty type)} \\
+\end{array}
+\]
+
+A \emph{data signature} consists of a name $D$ for the data type,
+a list of its parameters $\Delta$,
+a list of itsindices $\Delta'$,
+and its target sort $s$.
+\[
+\textbf{data}\; D\; \Delta : \Delta' \to s
+\]
+\emph{Data definitions} repeat the parameter telescope $\Delta$,
+since parameters will be mentioned in the types $T$ of the constructors $c$.
+\[
+\textbf{data}\; D\; \Delta \;\textbf{where}\; \overline{c : T}
+\]
+
+\emph{Record signature}s carry, in contrast to data signatures,
+no index telescope $\Delta'$, as Agda does not support indexed record types.
+\[
+\begin{array}{@{}l}
+\textbf{record}\; R\; \Delta : s
+\end{array}
+\]
+\emph{Record declarations} supply a record constructor name $c$
+and a list of fields $\pi$ with their types $T$.
+\[
+\begin{array}{@{}l}
+\textbf{record}\; R\; \Delta \; \textbf{where} \\
+\qquad  \textbf{constructor}\; c \\
+\qquad  \textbf{field}\; \overline{\pi : T} \\
+\end{array}
+\]
+
+Declaration checking moves declarations to the signature $\Sigma$,
+but not literally, but in a refined form.
+A signature is a list of signature declarations (used internally).
+\[
+\begin{array}{lcl}
+\Sigma & ::= &  \overline{d_\Sigma} \\
+d_\Sigma & ::= & \datasig \\
+& \mid & \recsig \\
+& \mid & \funsig
+\end{array}
+\]
+TODO: UPDATE SIGNATURE DECLARATIONS.
+
+
+
+
+\section{Typing rules}
+\label{sec:typing}
+
+
+\subsection{Auxiliary judgements}
+
+Hereditary substitution \fbox{$u[\sigma] = v$}
+is defined simultaneously with active elimination (see below).
+\begin{gather*}
+\inferrule
+  {\sigma(x) \bang \overline{e}[\sigma] = v}
+  {(x \overline{e})[\sigma] = v}
+\qquad
+\inferrule
+  {\overline{e}[\sigma] = \overline{e}'}
+  {(f \overline{e})[\sigma] = f \overline{e}'}
+\qquad
+\inferrule
+  {\overline{v}[\sigma] = \overline{v}'}
+  {(h \overline{v})[\sigma] = h \overline{v}'}
+  \ h ::= F \mid c \mid \cpi
+\qquad
+\rux{v[\sigma] = v'
+  }{(\lam x v)[\sigma] = \lam x v'
+  }{x \# \sigma}
+\\
+\rux{U[\sigma] = U' \qquad
+     V[\sigma] = V'
+   }{(\piT x U V)[\sigma] = \piT x {U'}{V'}
+   }{x \# \sigma}
+\qquad
+\ru{}{s[\sigma] = s}
+\end{gather*}
+Active elimination \fbox{$t \bang \overline{e} = v$}\ .
+\begin{gather*}
+\ru
+  { v[u/x] \bang \overline{e} = v'}
+  {\lambda x.v \bang @u \overline{e} = v'}
+\qquad
+\inferrule
+  {v_i \bang \overline{e} = v'}
+  {\cpi \overline{v} \bang .\pi_i \overline{e} = v'}
+\qquad
+\ru{}{t \bang \cdot = t}
+\qquad
+\ru{}{x \overline{e} \bang \overline{e}' = x \overline{e}
+  \overline{e}'}
+\qquad
+\ru{}{f \overline{e} \bang \overline{e}' = f \overline{e} \overline{e}'}
+%% We let constructors, record and data types be fully applied.
+% \qquad
+% \ru{}{z \overline{v} \bang @ \overline{u} = z \overline{v}
+%   \overline{u}}\ z ::= c \mid F
+% \qquad
+% \ru{}{D \overline{v} \bang @ \overline{u} = D \overline{v}
+%   \overline{u}}
+% \qquad
+% \ru{}{R \overline{v} \bang @ \overline{u} = R \overline{v} \overline{u}}
+\end{gather*}
+Note that since constructor and data and record type terms are fully
+applied, we do not need to give rules for adding further applications
+to these.  Of course, function type and sort expressions cannot be applied either.
+% \[
+% \[
+% \begin{array}{ll}
+% &
+% \\
+% &
+% \\
+% \inferrule{c \overline{v} u \bang \overline{e} = v'}
+% {\overline{v} \bang @u \overline{e} = v'}
+% &
+% \\
+% &
+% \text{ everything else undefined }
+% \end{array}
+% \]
+
+
+Function type application \fbox{$T \twobang \vec u = U$}.
+\[
+  \ru{}{T \twobang . = T}
+\qquad
+  \ru{\subst u x V \twobang \vec u = T
+    }{\funT x U V \twobang u \vec u = T}
+\]
+
+% Type elimination \fbox{$\Sigma \der (t : T) \twobang e = U$}.
+% \[
+%   \ru{}{\Sigma \der (t : \funT x U V) \twobang @u = \subst u x V}
+% \qquad
+%   \ru{\Sigma \der R.\pi : U
+%     }{}
+% \]
+
+Signature lookup \fbox{$\Sigma \der z : T$}.
+\begin{gather*}
+  \ru{\funsig \in \Sigma
+    }{\Sigma \der f : T}
+\\
+  \ru{\datasig \in \Sigma
+    }{\Sigma \der D : \Delta \to \Delta' \to s}
+\qquad
+  \ru{\datasig \in \Sigma
+    }{\Sigma \der D.c_i : \Delta \to T_i}
+\\
+  \ru{\recsig \in \Sigma
+    }{\Sigma \der R : \Delta \to s}
+\\
+  \ru{\recsig \in \Sigma
+    }{\Sigma \der R.c : \Delta \to T}
+\qquad
+  \ru{\recsig \in \Sigma
+    }{\Sigma \der R.\pi_i : \Delta \to T_i}
+\end{gather*}
+
+
+
+
+\subsection{Typing judgements for expressions}
+
+
+Typing contexts.
+\[
+\begin{array}{lcl}
+\Gamma & ::= & \cdot \mid \Gamma, x:T \\
+\Delta & ::= & \cdot \mid x:T, \Delta
+\end{array}
+\]
+
+Well-typed contexts \fbox{$\ders \Gamma$}.
+\[
+% Contexts
+\ru{}{\ders \cdot}
+\qquad
+\inferrule
+  {\ders \Gamma \qquad \Gamma \ders T:s}
+  {\ders \Gamma, x : T} \ x \not\in \dom(\Gamma)
+\]
+
+Well-typed telescopes \fbox{$\Gamma \ders \Delta$}.
+\[
+% Telescopes
+\inferrule
+  {\ders \Gamma}
+  {\Gamma \ders \cdot}
+\qquad
+\inferrule{\Gamma \ders T : s \qquad \Gamma, x:T \ders \Delta}
+{\Gamma \ders (x:T) \Delta}
+% \qquad x \in \dom{\Delta} \\
+\]
+
+Spine typing \fbox{$\Gamma \mid u : U \ders \overline{e} : T$}
+($u$ is neutral).
+\begin{gather*}
+% Check spine
+\ru{}
+{\Gamma \mid u:U \ders \cdot : U}
+\\
+\inferrule
+  {\Gamma \ders u:U \qquad \Gamma \mid t@u:T[u/x] \ders \overline{e} : V}
+  {\Gamma \mid t : \Pi x:U.T \ders @u \overline{e}:V}
+\qquad
+\ru{\Sigma \der R.\pi = T \qquad
+    T \twobang (\vec u,t) = U \qquad
+    \Gamma \mid t.\pi : U \ders \overline{e} : V
+  }{\Gamma \mid t :  R\overline{u}  \ders .\pi \overline{e} : V}
+% \inferrule{ \Gamma \vdash (t:R\overline{u}).\pi = T'
+% \qquad \Gamma \mid t.\pi :T' \ders \overline{e}:V}
+% { \Gamma \mid t : R \overline{u}  \ders .\pi \overline{e}:V}
+% \\
+% \Sigma \vdash (t:R\overline{u}).\pi = T
+% \\
+% (t: \Sigma x:A.B).\proj_2 = B[t.\proj_1/x] &
+% \\
+% \inferrule{T[u/x] \twobang \overline{e} = v}
+% {(\Pi x:U.T) \twobang @ u \overline{e} = v}
+\\
+\ru{\Gamma \mid u : U \ders \vec e : V \qquad
+    \Gamma \ders U = U' : s
+  }{\Gamma \mid u : U' \ders \vec e : V}
+\end{gather*}
+
+
+Term typing \fbox{$\Gamma \ders t : T$}
+\begin{gather*}
+\inferrule
+  {(x:U)\in \Gamma \qquad \Gamma \mid x:U \ders \overline{e}:T}
+  {\Gamma \ders x \overline{e} : T}
+\qquad
+\ru{\Sigma \vdash f : T \qquad
+    \Gamma \mid f : T \ders \vec e : V
+   }{\Gamma \ders f \vec e : V}
+\\
+\ru{\Sigma \der D.c : T \qquad
+    T \twobang \vec u = T' \qquad
+    \Gamma \mid c : T' \ders \vec v : D \, \vec u \, \vec t
+  }{\Gamma \ders c\,\vec v : D\,\vec u\,\vec t}
+\qquad
+\ru{\Sigma \vdash z : T \qquad
+    \Gamma \mid z : T \ders \vec u : V
+   }{\Gamma \ders z \, \vec u : V} \ z ::= D \mid R
+\\
+\ru{\Gamma, x \of U \ders v : V
+  }{\Gamma \ders \lambda x.v : \funT x U V}
+\qquad
+\ru{\Gamma \ders U : s \qquad
+    \Gamma, x \of U \ders V : s'
+  }{\Gamma \ders \piT x U V : s \sqcup s'}
+\end{gather*}
+
+
+Conversion
+\fbox{$\Gamma \ders t = t' : T$}\ .
+\begin{gather*}
+%
+\ru{f\,\overline q = t \in \Sigma \qquad
+    (\overline{\embp q})[\sigma] = \overline e \qquad
+    t[\sigma] = v \qquad
+    \Gamma \ders f\,\overline e : T \qquad
+    \Gamma \ders v : T
+  }{\Gamma \ders f \overline e = v : T}
+% \ru{\Sigma \der t \red t' \qquad
+%     \Gamma \ders t : T \qquad
+%     \Gamma \ders t' : T
+%   }{\Gamma \ders t = t' : T}
+\\
+\ru{\Gamma \ders t : \funT x U V
+  }{\Gamma \ders t = \lambda x. t\, x : \funT x U V}
+\qquad
+\ru{\Gamma \ders t : R\, \vec u \qquad
+    \Sigma \der R.\cpi : T
+  }{\Gamma \ders t = \cpi\,\overline{t .\pi} : R\,\vec u}
+\\
+\end{gather*}
+And many boring rules (equivalence, congruence)
+and rules for elimination equality
+\fbox{$\Gamma \mid t : T \ders \vec e = \vec e' : V$}
+
+\newpage
+
+\subsection{Type emptiness}
+
+\fbox{$\Gamma \der t \apart t' : T$}  In context $\Gamma$, terms $t$ and $t'$ of type $T$ cannot ever be unified.
+\begin{gather*}
+\rux{\Gamma \der c \vec v : T \qquad \Gamma \der c' \vec v' : T
+   }{\Gamma \der c \vec v \apart c' \vec v' : T
+   }{c \not= c'}
+\qquad
+\ru{\Gamma \der t \apart t' : T
+  }{\Gamma \der t' \apart t : T}
+\qquad
+\ru{\Gamma \der t \apart t' : T \qquad \Gamma \der t' = t'' : T
+  }{\Gamma \der t \apart t'' : T}
+\\
+\ru{\Sigma \der c : \Delta \to \Delta' \to D\,\Delta \,\vec u' \qquad
+    % \subst{\vec t}\Delta{\vec u'} = \vec u'' \qquad
+    \subst{\vec t}\Delta{\Delta'} = \Delta'' \qquad
+    \Gamma \der \vec v \apart \vec v' : \Delta''
+  }{\Gamma \der c \vec v \apart c \vec v' : D\,\vec t\,\vec u}
+% \ru{\Sigma \der c : \Delta \to \Delta' \to D\,\Delta \,\vec u' \qquad
+%     \subst{\vec t}\Delta{\vec u'} = \vec u'' \qquad
+%     \subst{\vec t}\Delta{\Delta'} = \Delta'' \qquad
+%     \Gamma \mid c : \Delta' \to D\,\vec t\,\vec u'' \der \vec v \apart \vec v' : D\,\vec t\,\vec u''
+%   }{\Gamma \der c \vec v \apart c \vec v' : D\,\vec t\,\vec u}
+\qquad
+\ru{\Gamma \der t \apart t' : T \qquad \Gamma \der T = T' : s
+  }{\Gamma \der t \apart t' : T'}
+\end{gather*}
+\fbox{$\Gamma \der \vec v \apart \vec v' : \Delta$}
+In context $\Gamma$, argument lists $\vec v$ and $\vec v'$ of telescope $\Delta$ cannot ever be unified.
+\begin{gather*}
+\ru{\Gamma \der v \apart v' : T
+  }{\Gamma \der v\,\vec v \apart v'\,\vec v' : (x \of T)\Delta}
+\\[2ex]
+\ru{\Gamma \der v = v' : T \qquad
+    \subst v x \Delta = \Delta' \qquad
+    \Gamma \der \vec v \apart \vec v' : \Delta'
+  }{\Gamma \der v \vec v \apart v' \vec v' : (x \of T) \Delta}
+\qquad
+\ru{%\Gamma \der \Delta \qquad
+    x \not\in\FV(\Delta) \qquad
+    % \subst {v_1} x \Delta = \Delta_1 \qquad
+    % \subst {v_2} x \Delta = \Delta_2 \qquad
+    % \Gamma \der \Delta_1 = \Delta_2 \qquad
+    \Gamma \der \vec v \apart \vec v' : \Delta
+  }{\Gamma \der v \vec v \apart v' \vec v' : (x \of T) \Delta}
+\end{gather*}
+
+\fbox{$\Gamma \der T \noinstance U$}
+\begin{gather*}
+\ru{\subst {\vec u} \Delta {\Delta'} = \Delta'' \qquad
+    \subst {\vec u} \Delta {\vec v'}  = \vec v'' \qquad
+    \Gamma, \Delta'' \der \vec v'' \apart \vec v : \Delta''
+  }{\Gamma \der \Delta \to \Delta' \to D\,\Delta\,\vec v' \noinstance D\,\vec u\,\vec v
+  }
+\qquad
+\end{gather*}
+
+\fbox{$\Gamma \der T \mempty$}: In context $\Gamma$, data type $T$ has no canonical inhabitants.
+\begin{gather*}
+\ru{\forall c.\ \Sigma \der D.c : U \Rightarrow \Gamma \der U \noinstance T
+  }{\Gamma \der T \mempty
+  }
+\qquad
+\ru{\Gamma \der T \mempty \qquad \Gamma \der T = T' : s
+  }{\Gamma \der T' \mempty}
+\end{gather*}
+
+\begin{verbatim}
+
+\end{verbatim}
+\subsection{Declaration typing}
+
+(Co)pattern variables \fbox{$PV(p) = \bar{x}$}
+\begin{gather*}
+PV(x) = \{ x \} \qquad PV (\lceil v \rceil) = \emptyset \qquad PV(c\; \bar{p}) = PV(\bar{p}) \\
+PV(\bar{p}) = \biguplus_i PV(p_i) \\
+PV(.\pi) = \emptyset \qquad PV(@p) = PV(p) \\
+PV(\bar{q}) = \biguplus_i PV(q_i) \\
+\end{gather*}
+
+
+Embedding of (co)patterns into terms \fbox{$\lceil p \rceil = t$}
+\begin{gather*}
+\lceil x \rceil = x \qquad
+\lceil \lfloor v \rfloor \rceil = v \qquad
+\lceil c\; \bar{p} \rceil = c\; \lceil \bar{p} \rceil \\
+\lceil .\pi \rceil = .\pi \qquad
+\lceil @p \rceil = @ \lceil p \rceil
+\end{gather*}
+
+
+%Pattern typing \fbox{$\Gamma \ders p : U \leadsto \Gamma'$}
+%\begin{gather*}
+%\ru{\Gamma \ders U : s}
+%   {\Gamma \ders x : U \leadsto (x : U)} x \not\in dom(\Gamma) \\
+%\ru{\Sigma \der D.c : T \qquad T\twobang\bar{u} = T' \qquad \Gamma \mid c : T \ders @\bar{p} : D\; \bar{u}\; \bar{v} \leadsto \Gamma'}
+%   {\Gamma  \ders c\; \bar{p} : D\; \bar{u}\; \bar{v} \leadsto \Gamma'}
+%\end{gather*}
+%
+%
+%Copattern typing \fbox{$\Gamma \mid f : T \ders \bar{q} : U \leadsto \Gamma'$}
+%\begin{gather*}
+%\ru{\Gamma \vdash p : U \leadsto \Gamma_1 \qquad \Gamma,\Gamma' | h\; @p : V[p/x] \ders \bar{q} : T  \leadsto \Gamma_2}
+%   {\Gamma \mid h : \piT x U V \ders @p\; \bar{q} : T \leadsto \Gamma_1 , \Gamma_2}
+%\end{gather*}
+
+Clause typing \fbox{$f : T \ders cl$}
+\begin{gather*}
+\ru{PV(\bar{q}) = dom(\Gamma) \qquad
+    \Gamma \mid f : T \ders \lceil \bar{q} \rceil : U \qquad
+    \Gamma \ders t : U}
+   {f : T \ders (\Gamma \rhd f\; \bar{q} : U = t)}
+\\
+\ru{PV(\bar{q}) = dom(\Gamma) \qquad
+    \Gamma \mid f : T \ders \lceil \bar{q} \rceil : U \qquad
+    \forall i.\ \Gamma \ders \Gamma(x_i) \mempty}
+   {f : T \ders (\Gamma \rhd f\; \bar{q} : U = \absurd \vec x)}
+\end{gather*}
+
+Constructor typing \fbox{$\Delta \mid U : \Delta' \to s \ders c : T$}
+\begin{gather*}
+\ru{\Delta \ders \Gamma \to T : s \qquad
+    \Delta,\Gamma \ders \bar{v} : \Delta' \qquad
+    \Delta,\Gamma \ders T = U\; \bar{v} : s}
+   {\Delta \mid U : \Delta' \to s \ders c : \Gamma \to T}
+\end{gather*}
+
+% TODO: add syntax for lone declarations without a definition (i.e. with no 'where').
+Declaration typing \fbox{$\Sigma \der d \leadsto \Sigma'$}
+\begin{gather*}
+\ru{f \not\in \Sigma \qquad \cdot \ders T : s}
+   {\Sigma \der f : T \leadsto \Sigma, function\; f : T\; where\; \cdot}
+\\
+\ru{\forall i.\; f : T \ders cl_i}
+   {\Sigma[function\; f : T\; where\; \cdot] \der \overline{cl} \leadsto \Sigma[function\; f : T\; where\; \overline{cl}]}
+\\
+\ru{D \not\in \Sigma \qquad \ders \Delta \qquad \Delta \ders \Delta'}
+   {\Sigma \der data\; D\; \Delta : \Delta' \to s \leadsto \Sigma, data\; D\; \Delta : \Delta' \to s}
+\\
+\ru{\forall i.\; \Delta \mid D\; \Delta : \Delta' \to s \vdash c_i : T_i}
+   {\Sigma[data\; D; \Delta : \Delta' \to s] \ders data\; D\; \Delta\; where\; \overline{c : T} \leadsto \Sigma[data\; D\; \Delta : \Delta' \to s\; where\; \overline{c : T}]}
+\\
+\ru{R \not\in \Sigma \qquad \ders \Delta}
+   {\Sigma \ders record\; R \; \Delta : s \leadsto \Sigma, record\; R\; \Delta : s}
+\\
+\ru{\Delta \ders \overline{(\hat{\pi} : T)} \to R\; \Delta : s \qquad
+    U_i = \Delta \to (x : R\; \Delta) \to T_i[x.\pi_j / \hat{\pi_j}] }
+   {\Sigma[record\; R\; \Delta : s] \ders record\; R\; \Delta\; where\; constructor\; c, \overline{field\; \hat{\pi} : T} \\  \leadsto \Sigma[record\; R\; \Delta : s\; where\; c : \Delta \to \overline{(\pi : T)} \to R\; \Delta; projections\; \overline{\pi : U}]} x \not\in dom(\Delta)
+\end{gather*}
+
+
+
+
+\section{Evaluation}
+\label{sec:evaluation}
+
+
+Matching \fbox{$\Sigma \vdash e/q = \sigma$}\ .
+\begin{gather*}
+\ru{}{\Sigma \vdash v/\lfloor u \rfloor = \cdot} % dot pattern
+\qquad
+\ru{}{\Sigma \vdash v/x = [v/x]} % var pat
+\qquad
+\ru
+  {\Sigma \vdash \overline{v}/\overline{\sigma} = \sigma}
+  {\Sigma \vdash c\overline{v}/c\overline{p} = \sigma}  % con pat
+\qquad
+\ru{v \bang \pi_i / p_i = \sigma}
+{\Sigma \vdash v / \cpi \overline{p} = \sigma} % record pat
+\qquad
+\ru{}{\Sigma \vdash .\pi/.\pi = \cdot} % proj pat
+\\
+\ru{\Sigma \vdash v \to v' \qquad \Sigma \vdash v'/c\overline{p} = \sigma}
+{\Sigma \vdash v / c \overline{p} = \sigma} % reduce
+\end{gather*}
+% \[
+% \begin{array}{ll}
+% \overline{e}/\overline{q} = \sigma  &
+% \Sigma \vdash e/q = \sigma
+% \end{array}
+% \]
+
+% \[
+% \begin{array}{ll}
+% \inferrule{}
+% {\Sigma \vdash v/\lfloor u \rfloor = \cdot} % dot pattern
+% &
+% \inferrule{}
+% {\Sigma \vdash v/x = [v/x]} % var pat
+% \\
+% \inferrule{\Sigma \vdash \overline{v}/\overline{\sigma} = \sigma}
+% {\Sigma \vdash c\overline{v}/c\overline{p} = \sigma}  % con pat
+% &
+% \inferrule{}
+% {\Sigma \vdash .\pi/.\pi = \cdot} % proj pat
+% \\
+% \inferrule{\Sigma \vdash v \to v' \qquad \Sigma \vdash v'/c\overline{p} = \sigma}
+% {\Sigma \vdash v / c \overline{p} = \sigma} % reduce
+% &
+% \inferrule{v \bang \pi_i / p_i = \sigma}
+% {\Sigma \vdash v / c_{\overline \pi} \overline{p} = \sigma} % record pat
+% \end{array}
+% \]
+
+Weak head reduction \fbox{$\Sigma \vdash t \to t'$}
+\[
+\begin{array}{lll}
+\inferrule{f \overline q = t \in \Sigma \qquad \Sigma \vdash \overline{e}/\overline{q} = \sigma}
+{\Sigma \vdash f \overline{e} \overline{e}' \to t[\sigma] \bang \overline{e}'}
+&
+\ru{}
+{\Sigma \vdash \cdot/\cdot = \cdot} %empty
+&
+\inferrule{\Sigma \vdash e/q = \sigma \qquad \Sigma \vdash \overline{e}/\overline{q} = \sigma'}
+{\Sigma \vdash e, \overline{e}/q, \overline{q} = \sigma \uplus \sigma'}%patterns
+\end{array}
+\]
+
+
+
+\section{Coverage}
+\label{sec:coverage}
+
+Pattern refinement
+\fbox{$\Gamma \der \vec p : \Delta \prefine x c \Gamma' \der \vec p' : \Delta$}.
+\begin{gather*}
+  \ru{(x : D\,\vec u\,\vec v \in \Gamma) \qquad \Sigma \der D.c : T
+    }{\Gamma \der \vec p : \Delta \prefine x c \Gamma' \der p \sigma [c\,\vec y / x] : ?}
+\end{gather*}
+
+\section{Termination}
+\label{sec:termination}
+
+\section{Positivity}
+\label{sec:positivity}
+
+\section{Extensions}
+\label{sec:extensions}
+
+\subsection{Extended record declarations}
+
+Record types
+\begin{verbatim}
+record R Γ : s where
+  [constructor c]
+  [(co)inductive]
+  [(no-)eta-equality]
+  rd*
+\end{verbatim}
+
+Record declaration
+\begin{verbatim}
+rd ::= field π : T
+     | ts
+     | cl
+\end{verbatim}
+
+
+%% Acknowledgments
+\begin{acks}                            %% acks environment is optional
+                                        %% contents suppressed with 'anonymous'
+  %% Commands \grantsponsor{<sponsorID>}{<name>}{<url>} and
+  %% \grantnum[<url>]{<sponsorID>}{<number>} should be used to
+  %% acknowledge financial support and will be used by metadata
+  % extraction tools.
+  % This material is based upon work supported by the
+  % \grantsponsor{GS100000001}{National Science
+  %   Foundation}{http://dx.doi.org/10.13039/100000001} under Grant
+  % No.~\grantnum{GS100000001}{nnnnnnn} and Grant
+  % No.~\grantnum{GS100000001}{mmmmmmm}.  Any opinions, findings, and
+  % conclusions or recommendations expressed in this material are those
+  % of the author and do not necessarily reflect the views of the
+  % National Science Foundation.
+\end{acks}
+
+
+%% Bibliography
+%\bibliography{bibfile}
+
+
+%% Appendix
+% \appendix
+% \section{Appendix}
+\fi
+
+\end{document}

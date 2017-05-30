@@ -2,6 +2,7 @@ module UserStudy where
 
 open import Data.Bool
 open import Data.List
+open import Data.List.Properties
 open import Data.Maybe
 open import Data.Nat
 open import Data.Nat.Properties
@@ -77,10 +78,24 @@ redistSum m       zero    m-h n a rewrite a = refl
 redistSum zero    (suc h) m-h n ()
 redistSum (suc m) (suc h) m-h n a rewrite redistSum m h m-h n (cong pred a) = refl
 
+listSumRevRev≡ : {n : ℕ} → {l : List ℕ}  → ListSum l n → ListSum (reverse (reverse l)) n
+listSumRevRev≡ {l = l} ls rewrite reverse-involutive l = ls
+
 listSum : {m n : ℕ} → {l₁ l₂ : List ℕ} → ListSum l₁ m → ListSum (l₁ ++ l₂) (m + n) → ListSum l₂ n
 listSum ListSumNil b = b
 listSum (ListSumCons h tl m-h a) b = {!let x = listSum a b in ?!}
 
+listSumRevRev : {m n : ℕ} → {l₁ l₂ : List ℕ} → ListSum l₁ m → ListSum (l₁ ++ l₂) (m + n) → ListSum (reverse (reverse l₂)) n
+listSumRevRev a b = listSumRevRev≡ (listSum a b)
+
+listSumRevRevPatch : ({m n : ℕ} → {l₁ l₂ : List ℕ} → ListSum l₁ m → ListSum (l₁ ++ l₂) (m + n) → ListSum l₂ n) →
+                     ({m n : ℕ} → {l₁ l₂ : List ℕ} → ListSum l₁ m → ListSum (l₁ ++ l₂) (m + n) → ListSum (reverse (reverse l₂)) n)
+                     
+listSumRevRevPatch P a b = listSumRevRev≡ (P a b)
+
+listSumRevRev' : {m n : ℕ} → {l₁ l₂ : List ℕ} → ListSum l₁ m → ListSum (l₁ ++ l₂) (m + n) → ListSum (reverse (reverse l₂)) n
+listSumRevRev' = listSumRevRevPatch listSum
+                     
 -- 6
 
 reverse-preserves-length : {A : Set} → (l : List A) → length l ≡ length (reverse l)
@@ -145,3 +160,23 @@ in-map-rev' = in-map-rev-patch in-map
 
 <A'→A>→<B→C>→<<A→B>→<B→C>> : {A A' B C : Set} → (A' → A) → (B → C) → ((A → B) → (A' → C))
 <A'→A>→<B→C>→<<A→B>→<B→C>> f g h = g ∘ h ∘ f
+
+thm : (a b : ℕ) → (P : ℕ → Set) → P (a + b) → P (b + a)
+thm a b P Px with (a + b) | +-comm a b
+thm a b P Px | .(b + a) | refl = Px
+
+inR : {A : Set} → {a : A} → {l r : List A} → a ∈ r → a ∈ (l ++ r)
+inR {l = []}    p = p
+inR {l = x ∷ l} p = there (inR {l = l} p)
+
+inTheList : {x y z : ℕ} → x ∈ ((y ∷ []) ++ (z ∷ x ∷ []))
+inTheList {y = y} = inR {l = y ∷ []} (there here)
+
+data Vec (A : Set): ℕ → Set where
+  []  : Vec A zero
+  _∷_ : {n : ℕ} → A → Vec A n → Vec A (suc n)
+
+v : Vec _ _
+v = zero ∷ []
+
+n = zero

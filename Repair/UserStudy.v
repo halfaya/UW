@@ -20,6 +20,9 @@ Require Import Coq.Lists.List.
 
 (* ------------------------ 1 ------------------------ *)
 
+Print le.
+
+
 (* ORIGINAL *)
 Theorem le_trans :
   forall (n m p : nat),
