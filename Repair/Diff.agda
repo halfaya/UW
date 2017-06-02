@@ -70,7 +70,7 @@ data _≤_ (n : ℕ) : ℕ → Set where
 -- indexed version
 data _≤'_ : ℕ → ℕ → Set where
   ln : {n : ℕ}            → n ≤' n
-  ls : {m n : ℕ} → m ≤' n → m ≤' suc n
+  ls : {n m : ℕ} → n ≤' m → n ≤' suc m
 
 -- another version from "A Tutorial on [Co-]Inductive Types in Coq"
 data _≤''_ : ℕ → ℕ → Set where
@@ -208,6 +208,24 @@ n≤an+1 {suc n} = ls (n≤an+1 {n})
 ≤asuc : {m n : ℕ} → m ≤a n → m ≤a suc n
 ≤asuc lz     = lz
 ≤asuc (ls x) = ls (≤asuc x)
+
+-- Isomorphism between ≤ and ≤'.
+
+≤→≤' : {m n : ℕ} → m ≤ n → m ≤' n
+≤→≤' ln     = ln
+≤→≤' (ls x) = ls (≤→≤' x)
+
+≤'→≤ : {m n : ℕ} → m ≤' n → m ≤ n
+≤'→≤ ln     = ln
+≤'→≤ (ls x) = ls (≤'→≤ x)
+
+inverse1 : {m n : ℕ} → (x : m ≤ n) → ≤'→≤ (≤→≤' x) ≡ x
+inverse1 ln     = refl
+inverse1 (ls x) = cong ls (inverse1 x)
+
+inverse2 : {m n : ℕ} → (x : m ≤' n) → ≤→≤' (≤'→≤ x) ≡ x
+inverse2 ln     = refl
+inverse2 (ls x) = cong ls (inverse2 x)
 
 -- Isomorphism between ≤ and ≤a.
 
