@@ -279,3 +279,26 @@ n≤n+1₂ {n} = n≤n+1₂-aux {n} (n + 1) (+-comm n 1)
 n≤n+1₃ : {n : ℕ} → n ≤ n + 1
 n≤n+1₃ = ≤a→≤ n≤an+1
 
+------------------
+
+-- ≤ transitivity using various definitions of ≤
+-- ≤trans and ≤atrans are above
+
+-- ≤' is identical to ≤
+n≤'sn : {n : ℕ} → n ≤' suc n
+n≤'sn = ls ln
+
+≤'trans : {m n p : ℕ} → m ≤' n → n ≤' p → m ≤' p
+≤'trans ln     y      = y
+≤'trans (ls x) ln     = ≤'trans x n≤'sn
+≤'trans (ls x) (ls y) = ls (≤'trans (ls x) y)
+
+-- ≤'' is the same for n≤sn (perhaps only due to implicits)
+n≤''sn : {n : ℕ} → n ≤'' suc n
+n≤''sn = ls ln
+
+-- the second and third cases here differ from ≤
+≤''trans : {m n p : ℕ} → m ≤'' n → n ≤'' p → m ≤'' p
+≤''trans ln     y      = y
+≤''trans (ls x) ln     = ls x
+≤''trans (ls x) (ls y) = ls (≤''trans x (ls y))

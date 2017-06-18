@@ -11,11 +11,11 @@ open import Agda.Builtin.Float
 open import Agda.Builtin.Int
 open import Agda.Builtin.Equality
 
-data A : Set where
-  mkA : A
+data A (n : Nat) : Set where
+  mkA : A n
 
-data B : Set where
-  mkB : B
+data B : Nat → Set where
+  mkB : {n : Nat} → A n → String → B n
 
 x = (_∷ []) "" 
 
@@ -47,5 +47,11 @@ macro
   getdef : Name → Term → TC ⊤
   getdef n hole = getDefinition n ≫= firstConstructor ≫= unify hole ∘ lit ∘ name
 
+  getTyp : Name → Term → TC ⊤
+  getTyp n hole = getType n ≫= unify hole
+
 s : Name
 s = getdef A
+
+t : Set
+t = getTyp mkA
