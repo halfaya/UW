@@ -1,12 +1,8 @@
 module Plus where
 
-infix  4 _≡_
+open import Agda.Builtin.Equality
+
 infixl 6 _+_ _⊕_ _⊞_
-
-data _≡_ {ℓ} {A : Set ℓ} (a : A) : A → Set where
-  refl : a ≡ a
-
-{-# BUILTIN EQUALITY _≡_ #-}
 
 sym : {A : Set} → {a b : A} → a ≡ b → b ≡ a
 sym refl = refl

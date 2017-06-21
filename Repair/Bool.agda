@@ -48,3 +48,20 @@ iso = record {aToB = boolToFin2; bToA = fin2ToBool; inv1 = inverse1; inv2 = inve
 -- Fin 0 is identical to ⊥
 fin0Elim : {A : Set} → Fin 0 → A
 fin0Elim ()
+
+---------------------------
+
+idBool : Bool → Bool
+idBool x = x
+
+idBool' : Bool → Bool
+idBool' true  = true
+idBool' false = false
+
+idBool-idBool : {b : Bool} → idBool b ≡ b
+idBool-idBool = refl
+
+idBool-idBool' : {b : Bool} → idBool' b ≡ b
+--idBool-idBool' = refl -- fails
+idBool-idBool' {true}  = refl
+idBool-idBool' {false} = refl

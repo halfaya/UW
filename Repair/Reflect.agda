@@ -31,27 +31,52 @@ infixl 1 _≫=_
 _≫=_ : ∀ {a b} {A : Set a} {B : Set b} → TC A → (A → TC B) → TC B
 _≫=_ = bindTC
 
+map : {A B : Set} → (f : A → B) → List A → List B
+map f []       = [] 
+map f (x ∷ xs) = f x ∷ map f xs
+
 err : {A : Set} → String → TC A
-err = typeError ∘ (_∷ []) ∘ strErr
+err = typeError ∘ map strErr ∘ (λ x → "Error:\n" ∷ x ∷ [])
 
 firstConstructor : Definition → TC Name
 firstConstructor (function cs)             = err "bad function"
 firstConstructor (data-type pars [])       = err "empty data-type"
-firstConstructor (data-type pars (n ∷ ns)) = returnTC n
+firstConstructor (data-type pars (n ∷ [])) = returnTC n
+firstConstructor (data-type pars (_ ∷ n ∷ ns)) = returnTC n
 firstConstructor (record-type c)           = err "bad record-type"
 firstConstructor (data-cons d)             = err "bad data-cons"
 firstConstructor axiom                     = err "bad axiom"
 firstConstructor prim-fun                  = err "bad prim-fun"
 
+getFunction : Definition → TC (List Clause)
+getFunction (function cs)       = returnTC cs
+getFunction (data-type pars cs) = err "bad data-type"
+getFunction (record-type c)     = err "bad record-type"
+getFunction (data-cons d)       = err "bad data-cons"
+getFunction axiom               = err "bad axiom"
+getFunction prim-fun            = err "bad prim-fun"
+
 macro
+  getfun : Name → Term → TC ⊤
+  getfun n hole = getDefinition n
+    ≫= getFunction
+    ≫= (λ cs → inferType (pat-lam cs {-(arg (arg-info visible relevant) (lit (nat zero)) ∷-} []))
+    ≫= unify hole
+  
   getdef : Name → Term → TC ⊤
   getdef n hole = getDefinition n ≫= firstConstructor ≫= unify hole ∘ lit ∘ name
 
   getTyp : Name → Term → TC ⊤
   getTyp n hole = getType n ≫= unify hole
 
+  getTyp1 : Name → Term → TC ⊤
+  getTyp1 n hole = getDefinition n ≫= firstConstructor ≫= getType ≫= unify hole
+
 s : Name
-s = getdef A
+s = getdef Nat
 
 t : Set
-t = getTyp mkA
+t = getTyp1 Nat
+
+--u : Set
+--u = getfun _+_

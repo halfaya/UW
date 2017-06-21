@@ -64,6 +64,10 @@ open import Relation.Binary.PropositionalEquality
                  ({n m p : ℕ} → n ≤ m → m ≤ p → n < p + 1)
 <trans+1Patch P {n} {m} {p} b c rewrite +-comm p 1 = P b c
 
+<trans+1Patch' : ({n m p : ℕ} → n ≤ m → m ≤ p → n < p + 1) →
+                 ({n m p : ℕ} → n ≤ m → m ≤ p → n < suc p)
+<trans+1Patch' P {n} {m} {p} b c rewrite +-comm 1 p = P b c
+
 <trans+1' : {n m p : ℕ} → n ≤ m → m ≤ p → n < p + 1
 <trans+1' = <trans+1Patch <transSuc
 
