@@ -6,6 +6,7 @@ open import Agda.Builtin.Equality
 open import Agda.Builtin.Nat hiding (_<_)
 
 -- J is Coq's eq_rect and J' is eq_rect_r
+-- Note that this is not really the full J, but rather the special case known as Transport.
 
 J : {A : Set} → (x : A) → (P : A → Set) → P x → (y : A) → x ≡ y → P y
 J P x px y refl = px
