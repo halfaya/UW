@@ -1,4 +1,5 @@
 Require Import Coq.Lists.List.
+Require Import Coq.Program.Basics.
 
 Print  eq_rect_r.
 
@@ -31,6 +32,16 @@ Print alices.
 
 (* Definition bobs : _ 0 = 0 := eq_refl. *)
 
-Definition alices2 : forall (x y z : nat), In x ((y :: nil) ++ (z :: x :: nil)) := fun x y z => in_eq x nil.
+(* Definition alices2 : forall (x y z : nat), In x ((y :: nil) ++ (z :: x :: nil)) := fun x y z => in_eq x nil.
 
-Print alices2.
+Print alices2. *)
+
+Print eq_refl.
+
+Theorem ea : forall (A B C : Type) (f : A -> B) (g : B -> C), compose g f = compose g  (fun x => f x).
+Proof. intros. reflexivity. Qed.
+
+Print ea.
+
+Definition eta_equality : forall (A B : Type) (f : A -> B), f = f :=
+                              eq_refl.

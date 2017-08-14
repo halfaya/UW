@@ -19,11 +19,11 @@ open import Relation.Binary.PropositionalEquality
 ≤transWeak {p = p} a b = ≤-trans (≤-trans a b) (m≤m+n p 1)
 
 ≤trans : {n m p : ℕ} → n ≤ m → m ≤ p → n ≤ p
-≤trans {p = p} a b = (≤-trans a b)
+≤trans = ≤-trans
 
 ≤transWeakPatch : ({n m p : ℕ} → n ≤ m → m ≤ p → n ≤ p) →
                   ({n m p : ℕ} → n ≤ m → m ≤ p → n ≤ p + 1)
-≤transWeakPatch P {n} {m} {p} b c = ≤-trans (P b c) (m≤m+n p 1)
+≤transWeakPatch P {n} {m} {p} a b = ≤-trans (P a b) (m≤m+n p 1)
 
 ≤transWeak' : {n m p : ℕ} → n ≤ m → m ≤ p → n ≤ p + 1
 ≤transWeak' = ≤transWeakPatch ≤trans

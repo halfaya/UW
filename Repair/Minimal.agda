@@ -35,6 +35,9 @@ lePlusTrans k m (suc n) p =
       c : m + n ≤ m + suc n ; c = lem m n (suc n) b
   in ≤-trans a c 
 
+eqInd : {A : Set} → {x y : A} → (P : A → Set) → P x → x ≡ y → P y
+eqInd P base refl = base
+
 eqIndR : {A : Set} → {x y : A} → (P : A → Set) → P x → y ≡ x → P y
 eqIndR P base refl = base
 
@@ -43,3 +46,29 @@ newMinimal {k} {m} {n} H = eqIndR (λ x → n ≤ max k x) (leMaxR k n) H
 
 oldMinimal : {k m n : ℕ} → (H : m ≡ n) → n ≤ max k m + 1
 oldMinimal {k} {m} {n} H = eqIndR (λ x → n ≤ max k x + 1) (lePlusTrans n (max k n) 1 (leMaxR k n)) H
+
+oldMinimal' : {k m n : ℕ} → (H : m ≡ n) → n ≤ max k m + 1
+oldMinimal' {k} {m} {n} H = lePlusTrans n (max k m) 1 (eqIndR (λ x → n ≤ max k x) (leMaxR k n) H)
+
+addSucL : (m n : ℕ) → suc m + n ≡ suc (m + n)
+addSucL _ _ = refl
+
+addSucR : (m n : ℕ) → m + suc n ≡ suc (m + n)
+addSucR zero    _ = refl
+addSucR (suc m) n = cong suc (addSucR m n)
+
+n<Sn+m→n<n+Sm : (n m : ℕ) → n < suc n + m → n < n + suc m
+--n<Sn+m→n<n+Sm n m p = eqIndR (λ x → n < x) (eqInd (λ x → n < x) p (addSucL n m)) (addSucR n m)
+n<Sn+m→n<n+Sm n m p = eqIndR (λ x → n < x) p (addSucR n m)
+
+n<n+Sm→n<Sn+m : (n m : ℕ) → n < n + suc m → n < suc n + m
+--n<n+Sm→n<Sn+m n m p = eqIndR (λ x → n < x) (eqInd (λ x → n < x) p (addSucR n m)) (addSucL n m)
+n<n+Sm→n<Sn+m n m p = eqInd (λ x → n < x) p (addSucR n m)
+
+-- Note an identical proof works for all three cases:
+-- n < suc n + m
+-- n < suc (n + m)
+-- n < n + suc m
+n<n+Sm : (n m : ℕ) → n < n + suc m
+n<n+Sm zero    m = s≤s z≤n
+n<n+Sm (suc n) m = s≤s (n<n+Sm n m)
