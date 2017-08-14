@@ -132,11 +132,11 @@ positiveMaybe : (n : ℕ) → Maybe (Σ ℕ (λ m → suc m ≡ n))
 positiveMaybe zero    = nothing
 positiveMaybe (suc n) = just (n , refl)
 
-sucn̸n≢0 : (n : ℕ) → ¬ (suc n ≡ 0)
-sucn̸n≢0 n ()
+sucn≢0 : (n : ℕ) → ¬ (suc n ≡ 0)
+sucn≢0 n ()
 
 positiveDec : (n : ℕ) → Dec (Σ ℕ (λ m → suc m ≡ n))
-positiveDec zero    = no  (λ x → sucn̸n≢0 (Σ.proj₁ x) (Σ.proj₂ x))
+positiveDec zero    = no  (λ x → sucn≢0 (Σ.proj₁ x) (Σ.proj₂ x))
 positiveDec (suc n) = yes (n , refl)
 
 -- trivial patched theorem
