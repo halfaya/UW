@@ -32,7 +32,7 @@ Reserved Notation "x <=a y" (at level 70, no associativity).
 
 Inductive lea : nat -> nat -> Prop :=
   | lea_z : forall n : nat, 0 <=a n
-  | lea_S : forall m n : nat, m <=a n -> S m <=a S m
+  | lea_S : forall m n : nat, m <=a n -> S m <=a S n
 where "n <=a m" := (lea n m) : nat_scope.                                  
 
 (* Map from <= to <=a
@@ -47,24 +47,26 @@ where "n <=a m" := (lea n m) : nat_scope.
 ≤→≤a {suc m} (ls x) = ≤asuc (≤→≤a {suc m} x)
  *)
 
-(* This kind of pattern matching doesn't seem to work for Gallina
 Fixpoint leaS (m n : nat) (p : m <=a n) {struct p}: m <=a S n :=
   match p with
   | lea_z n     => lea_z (S n)
   | lea_S m n x => lea_S m (S n) (leaS m n x)
   end.
 
-Fixpoint leToLea (m n : nat, p : m <= n) : m <=a n :=
-  match m with
-  | 0   => leaz
-  | S m => match p with
-          | le_n => lea_S (leToLea m n le_n)
-          | le_S => (* to be done *)
-          end.
-  end.             
- *)
+(*
+I get stuck trying to define this function in Gallina.
 
-(* Following this, define the reverse map <=a to <=.
+Fixpoint leToLea (m n : nat) (p : m <= n) : m <=a n :=
+  match m with
+  | 0   => lea_z n
+  | S m => match p with
+          | le_n _     => lea_S (leToLea m n (le_n n))
+          | le_S _ _ x => leaS (leToLea (S m) n x)
+          end
+  end.
+*)
+
+  (* Following this, define the reverse map <=a to <=.
    Then prove transitivity for the Coq <= (should already be in the standard library).
    Then prove transitivity for the Agda <= by converting the two hypotheses to the coq version,
    running Coq <= transitivity, and converting the result back to the Agda version.
