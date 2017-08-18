@@ -37,6 +37,10 @@ n≤asn' = ≤→≤a n≤sn
 ≤atrans' : {m n p : ℕ} → m ≤a n → n ≤a p → m ≤a p
 ≤atrans' x y = ≤→≤a (≤trans (≤a→≤ x) (≤a→≤ y))
 
+≤atransPatch : ({m n p : ℕ} → m ≤  n → n ≤  p → m ≤  p) →
+               ({m n p : ℕ} → m ≤a n → n ≤a p → m ≤a p)
+≤atransPatch t x y = ≤→≤a (t (≤a→≤ x) (≤a→≤ y))
+
 --------------------------------------------------------------------------------
 -- 2. + variations
 
@@ -186,7 +190,7 @@ odd'→odd (osuc' n) = osuc (esuc (odd'→odd n))
 -- original theorems
 
 even-n+n : (n : ℕ) → Even (n + n)
-even-n+n zero = ezero
+even-n+n zero    = ezero
 even-n+n (suc n) = transport Even (suc (suc (n + n))) (suc (n + suc n)) (sym (cong suc (+-suc n n))) (esuc (osuc (even-n+n n))) 
 
 even'-n+n : (n : ℕ) → Even' (n + n)
