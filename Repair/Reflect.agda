@@ -41,8 +41,8 @@ err = typeError ∘ map strErr ∘ (λ x → "Error:\n" ∷ x ∷ [])
 firstConstructor : Definition → TC Name
 firstConstructor (function cs)             = err "bad function"
 firstConstructor (data-type pars [])       = err "empty data-type"
-firstConstructor (data-type pars (n ∷ [])) = returnTC n
-firstConstructor (data-type pars (_ ∷ n ∷ ns)) = returnTC n
+firstConstructor (data-type pars (n ∷ _)) = returnTC n
+--firstConstructor (data-type pars (_ ∷ n ∷ ns)) = returnTC n
 firstConstructor (record-type c)           = err "bad record-type"
 firstConstructor (data-cons d)             = err "bad data-cons"
 firstConstructor axiom                     = err "bad axiom"
