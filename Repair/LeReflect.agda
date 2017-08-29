@@ -6,6 +6,8 @@ open import Function
 open import Relation.Binary.Core
 open import Relation.Binary.PropositionalEquality
 
+open import Agda.Builtin.Bool
+
 open import IsoReflect
 
 {-
@@ -52,9 +54,23 @@ data _≤′_ (m : ℕ) : ℕ → Set where
 0≤′1′ = ≤⇒≤′ 0≤1
 
 0≤′1c : 0 ≤′ 1 -- via convert
-0≤′1c = convert _≤_ ≤⇒≤′ 0≤1
+0≤′1c = convert _≤_ ≤⇒≤′ ≤′⇒≤ 0≤1
+
+-- Note that the proofs are all definitionally equal.
+
+0≤′1≡0≤′1′ : 0≤′1 ≡ 0≤′1′
+0≤′1≡0≤′1′ = refl
+
+0≤′1′≡0≤′1c : 0≤′1′ ≡ 0≤′1c
+0≤′1′≡0≤′1c = refl
 
 -- Transitivity
 
 ≤′-trans : Transitive _≤′_
-≤′-trans = λ a b → ≤⇒≤′ (≤-trans (≤′⇒≤ a) (≤′⇒≤ b))
+≤′-trans {i} {j} {k} = λ (a : i ≤′ j) (b : j ≤′ k) → ≤⇒≤′ (≤-trans (≤′⇒≤ a ) (≤′⇒≤ b ))
+
+≤′-transc : Transitive _≤′_ -- via convert
+≤′-transc = convert _≤_ ≤⇒≤′ ≤′⇒≤ ≤-trans
+
+≤′-trans≡≤′-transc : {i j k : ℕ} → ≤′-trans {i} {j} {k} ≡ ≤′-transc {i} {j} {k} -- definitinally equal
+≤′-trans≡≤′-transc = refl
