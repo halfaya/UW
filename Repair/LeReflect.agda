@@ -3,10 +3,14 @@ module LeReflect where
 open import Data.Nat
 open import Data.Nat.Properties
 open import Function
+open import Relation.Binary.Consequences using (Total)
 open import Relation.Binary.Core
 open import Relation.Binary.PropositionalEquality
+open import Relation.Nullary using (¬_)
 
 open import Agda.Builtin.Bool
+open import Agda.Builtin.Reflection using (Name; Term; TC)
+open import Agda.Builtin.Unit
 
 open import IsoReflect
 
@@ -72,5 +76,34 @@ data _≤′_ (m : ℕ) : ℕ → Set where
 ≤′-transc : Transitive _≤′_ -- via convert
 ≤′-transc = convert _≤_ ≤⇒≤′ ≤′⇒≤ ≤-trans
 
-≤′-trans≡≤′-transc : {i j k : ℕ} → ≤′-trans {i} {j} {k} ≡ ≤′-transc {i} {j} {k} -- definitinally equal
+≤′-trans≡≤′-transc : {i j k : ℕ} → ≤′-trans {i} {j} {k} ≡ ≤′-transc {i} {j} {k} -- definitionally equal
 ≤′-trans≡≤′-transc = refl
+
+-- Other properites
+
+-- Note that ≤′-refl is one of the constructors.
+≤′-refl′ : Reflexive _≤′_
+≤′-refl′ = convert _≤_ ≤⇒≤′ ≤′⇒≤ ≤-refl
+
+-- ≤′-step is also a constructor.
+≤′-step′ : ∀ {m n} → m ≤′ n → m ≤′ 1 + n
+≤′-step′ = convert _≤_ ≤⇒≤′ ≤′⇒≤ ≤-step
+
+≤′pred⇒≤′ : ∀ {m n} → m ≤′ pred n → m ≤′ n
+≤′pred⇒≤′ = convert _≤_ ≤⇒≤′ ≤′⇒≤ ≤pred⇒≤
+
+≤′⇒pred≤′ : ∀ {m n} → m ≤′ n → pred m ≤′ n
+≤′⇒pred≤′ = convert _≤_ ≤⇒≤′ ≤′⇒≤ ≤⇒pred≤
+
+-- TODO:
+
+{-
+≤′-total : Total _≤′_
+≤′-total = convert _≤_ ≤⇒≤′ ≤′⇒≤ ≤-total
+
+n≤′1+n : ∀ n → n ≤′ 1 + n
+n≤′1+n = convert _≤_ ≤⇒≤′ ≤′⇒≤ n≤1+n
+
+1+n≰′n : ∀ {n} → ¬ 1 + n ≤′ n
+1+n≰′n = convert _≤_ ≤⇒≤′ ≤′⇒≤ 1+n≰n
+-}
