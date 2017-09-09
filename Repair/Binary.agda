@@ -75,3 +75,18 @@ bin→ℕpreservesIncrB (b21 b) rewrite bin→ℕpreservesIncrB b = doubleSuc (b
 
 bin→ℕpreservesIncrA' : (b : Bin) → bin→ℕA (incr b) ≡ 1 + bin→ℕA b
 bin→ℕpreservesIncrA' b rewrite A≡B b | A≡B (incr b) = bin→ℕpreservesIncrB b
+
+----
+
+-- Identical definitions of bin→ℕB and bin→ℕB'
+
+bin→ℕB' : Bin → ℕ
+bin→ℕB' b0      = zero
+bin→ℕB' (b2 b)  = bin→ℕB' b + bin→ℕB' b
+bin→ℕB' (b21 b) = suc (bin→ℕB' b + bin→ℕB' b)
+
+B≡B' : (b : Bin) → bin→ℕB b ≡ bin→ℕB' b
+B≡B' b0      = refl
+B≡B' (b2 b)  rewrite (B≡B' b) = refl
+B≡B' (b21 b) rewrite (B≡B' b) = refl
+
