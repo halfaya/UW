@@ -1,8 +1,11 @@
 module Binary where
 
 open import Data.Nat
-open import Data.Nat.Properties using (+-identityʳ; +-comm)
+open import Data.Nat.Properties using (+-identityʳ; +-comm; +-assoc)
 open import Relation.Binary.PropositionalEquality
+
+transport : {A : Set} → (P : A → Set) → (x y : A) → x ≡ y → P x → P y
+transport P _ _ refl px = px
 
 data Bin : Set where 
   b0  : Bin       -- 0
@@ -37,6 +40,17 @@ A≡B : (b : Bin) → bin→ℕA b ≡ bin→ℕB b
 A≡B b0      = refl
 A≡B (b2 b)  rewrite A≡B b | +-identityʳ (bin→ℕB b) = refl
 A≡B (b21 b) rewrite A≡B b | +-identityʳ (bin→ℕB b) = refl
+
+A≡B' : (b : Bin) → bin→ℕA b ≡ bin→ℕB b + 0
+A≡B' b0      = refl
+A≡B' (b2 b)  rewrite A≡B b | +-assoc (bin→ℕB b) (bin→ℕB b) 0 = refl
+A≡B' (b21 b) rewrite A≡B b | +-assoc (bin→ℕB b) (bin→ℕB b) 0 = refl
+
+A→B : (P : ℕ → Set) → (b : Bin) → P (bin→ℕA b) → P (bin→ℕB b + 0)
+A→B P b H = transport P (bin→ℕA b) (bin→ℕB b + 0) (A≡B' b) H
+
+A→A : (P : ℕ → Set) → (b : Bin) → P (bin→ℕA b) → P (bin→ℕA b + 0)
+A→A P b H = transport P (bin→ℕA b) (bin→ℕA b + 0) (sym (+-identityʳ (bin→ℕA b))) H
 
 doubleSuc : (n : ℕ) → suc (n + suc n) ≡ suc (suc (n + n))
 doubleSuc n = cong suc (+-comm n (suc n))
