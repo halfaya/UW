@@ -83,3 +83,10 @@ Fixpoint bin_to_nat_d (b: bin) : nat :=
   | B2 b' => 2 * (bin_to_nat_a b')
   | B21 b' => 2 * (bin_to_nat_a b') + 1
   end.
+
+Fixpoint bin_to_nat_e (b: bin) : nat :=
+  match b with
+  | B0 => O
+  | B2 b' => (bin_to_nat_a b') * 2
+  | B21 b' => 1 + (bin_to_nat_a b') * 2
+  end.
