@@ -49,6 +49,15 @@ doubleSuc+ n = refl
 
 ----
 
+_*'_ : ℕ → ℕ → ℕ
+zero  *' n = zero
+suc m *' n = m *' n + n
+
+2*'+ : (n : ℕ) → 2 *' n ≡ n + n
+2*'+ n = refl
+
+----
+
 bin→ℕA : Bin → ℕ
 bin→ℕA b0      = zero
 bin→ℕA (b2 b)  = 2 * (bin→ℕA b)
