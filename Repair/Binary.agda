@@ -29,11 +29,14 @@ double+ : (n : ℕ) → double n ≡ n + n
 double+ zero    = refl
 double+ (suc n) rewrite +-comm n (suc n) = cong (suc ∘ suc) (double+ n)
 
-doubleSuc : (n : ℕ) → suc (n + suc n) ≡ suc (suc (n + n))
+doubleSuc : (n : ℕ) → suc n + suc n ≡ suc (suc (n + n))
 doubleSuc n = cong suc (+-comm n (suc n))
 
-doubleSuc0 : (n : ℕ) → suc (n + suc (n + 0)) ≡ suc (suc (n + (n + 0)))
+doubleSuc0 : (n : ℕ) → suc n + suc (n + 0) ≡ suc (suc (n + (n + 0)))
 doubleSuc0 n rewrite +-identityʳ n = doubleSuc n
+
+doubleSuc+ : (n : ℕ) → double (suc n) ≡ suc (suc (double n))
+doubleSuc+ n = refl
 
 ----
 
@@ -104,11 +107,6 @@ A≡E (b21 b) rewrite A≡E b | +-identityʳ (bin→ℕE b) = cong suc (sym (2*+
 
 ----
 
-bin→ℕpreservesIncr : (b : Bin) → bin→ℕC (incr b) ≡ 1 + bin→ℕC b
-bin→ℕpreservesIncr b0      = refl
-bin→ℕpreservesIncr (b2 b)  = refl
-bin→ℕpreservesIncr (b21 b) = cong double (bin→ℕpreservesIncr b)
-
 bin→ℕpreservesIncrA : (b : Bin) → bin→ℕA (incr b) ≡ 1 + bin→ℕA b
 bin→ℕpreservesIncrA b0      = refl
 bin→ℕpreservesIncrA (b2 b)  = refl
@@ -126,6 +124,11 @@ bin→ℕpreservesIncrC : (b : Bin) → bin→ℕC (incr b) ≡ 1 + bin→ℕC b
 bin→ℕpreservesIncrC b0      = refl
 bin→ℕpreservesIncrC (b2 b)  = refl
 bin→ℕpreservesIncrC (b21 b) rewrite bin→ℕpreservesIncrC b = refl
+
+bin→ℕpreservesIncrC' : (b : Bin) → bin→ℕC (incr b) ≡ 1 + bin→ℕC b
+bin→ℕpreservesIncrC' b0      = refl
+bin→ℕpreservesIncrC' (b2 b)  = refl
+bin→ℕpreservesIncrC' (b21 b) = cong double (bin→ℕpreservesIncrC' b)
 
 bin→ℕpreservesIncrD : (b : Bin) → bin→ℕD (incr b) ≡ 1 + bin→ℕD b
 bin→ℕpreservesIncrD b0      = refl
