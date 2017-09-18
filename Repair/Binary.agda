@@ -29,6 +29,10 @@ double+ : (n : ℕ) → double n ≡ n + n
 double+ zero    = refl
 double+ (suc n) rewrite +-comm n (suc n) = cong (suc ∘ suc) (double+ n)
 
+double* : (n : ℕ) → double n ≡ 2 * n
+double* zero    = refl
+double* (suc n) rewrite +-identityʳ n | +-comm n (suc n) = cong (suc ∘ suc) (double+ n)
+
 doubleSuc : (n : ℕ) → suc n + suc n ≡ suc (suc (n + n))
 doubleSuc n = cong suc (+-comm n (suc n))
 
@@ -55,6 +59,11 @@ suc m *' n = m *' n + n
 
 2*'+ : (n : ℕ) → 2 *' n ≡ n + n
 2*'+ n = refl
+
+-- identical to n + n case since n + n = 2 *' n
+double*' : (n : ℕ) → double n ≡ 2 *' n
+double*' zero    = refl
+double*' (suc n) rewrite +-comm n (suc n) = cong (suc ∘ suc) (double+ n)
 
 ----
 
