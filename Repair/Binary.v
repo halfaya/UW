@@ -270,3 +270,69 @@ The isomorphism with S_S_plus_same_term is now impossible to see.
 *)
 Definition S_double'_term : forall a : nat, double (S a) = S (S (double a)) :=
   fun a : nat => eq_refl.
+
+Set Nonrecursive Elimination Schemes.
+
+Record int : Type :=
+  mkint { intval: nat; intrange: 0 <= intval < 10 }.
+
+Definition int_ind_term : forall P : int -> Prop,
+       (forall (intval : nat) (intrange : 0 <= intval < 10),
+        P {| intval := intval; intrange := intrange |}) -> 
+       forall i : int, P i := 
+  fun P : int -> Prop => int_rect P.
+
+Definition int_rect_term : forall P : int -> Type,
+       (forall (intval : nat) (intrange : 0 <= intval < 10),
+        P {| intval := intval; intrange := intrange |}) -> 
+       forall i : int, P i := 
+fun (P : int -> Type)
+  (f : forall (intval : nat) (intrange : 0 <= intval < 10),
+       P {| intval := intval; intrange := intrange |}) 
+  (i : int) =>
+match i as i0 return (P i0) with
+| {| intval := x; intrange := x0 |} => f x x0
+end.
+
+Definition int' : Type :=
+  exists intval, 0 <= intval < 10.
+
+(*
+Inductive ex (A : Type) (P : A -> Prop) : Prop :=
+    ex_intro : forall x : A, P x -> exists y, P y
+ *)
+
+Definition ex_ind_term : forall (A : Type) (P : A -> Prop) (P0 : Prop),
+       (forall x : A, P x -> P0) -> (exists y, P y) -> P0 := 
+fun (A : Type) (P : A -> Prop) (P0 : Prop) (f : forall x : A, P x -> P0)
+  (e : exists y, P y) => match e with
+                         | ex_intro _ x x0 => f x x0
+                         end.
+
+Inductive ex' (A : Type) (P : A -> Prop) : Prop :=
+    ex'_intro : forall x : A, P x -> ex' A P.
+
+Definition ex'_ind_term : forall (A : Type) (P : A -> Prop) (P0 : Prop),
+       (forall x : A, P x -> P0) -> ex' A P -> P0 := 
+fun (A : Type) (P : A -> Prop) (P0 : Prop) (f : forall x : A, P x -> P0)
+  (e : ex' A P) => match e with
+                   | ex'_intro _ _ x x0 => f x x0
+                   end.
+
+(*
+Inductive eq (A : Type) (x : A) : A -> Prop
+  :=  eq_refl : x = x
+
+eq_ind = 
+fun (A : Type) (x : A) (P : A -> Prop) => eq_rect x P
+     : forall (A : Type) (x : A) (P : A -> Prop),
+       P x -> forall y : A, x = y -> P y
+
+eq_rect = 
+fun (A : Type) (x : A) (P : A -> Type) (f : P x) (y : A) (e : x = y) =>
+match e in (_ = y0) return (P y0) with
+| eq_refl => f
+end
+     : forall (A : Type) (x : A) (P : A -> Type),
+       P x -> forall y : A, x = y -> P y
+*)
