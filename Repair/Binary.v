@@ -336,3 +336,17 @@ end
      : forall (A : Type) (x : A) (P : A -> Type),
        P x -> forall y : A, x = y -> P y
 *)
+
+Inductive eq' (A : Type) : A -> A -> Prop
+  :=  eq'_refl (x : A) : eq' A x x.
+
+(*
+eq'_ind = 
+fun (A : Type) (P : A -> A -> Prop) (f : forall x : A, P x x) 
+  (y y0 : A) (e : eq' A y y0) =>
+match e in (eq' _ y1 y2) return (P y1 y2) with
+| eq'_refl _ x => f x
+end
+     : forall (A : Type) (P : A -> A -> Prop),
+       (forall x : A, P x x) -> forall y y0 : A, eq' A y y0 -> P y y0
+*)
