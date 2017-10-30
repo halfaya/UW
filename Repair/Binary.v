@@ -337,9 +337,31 @@ end
        P x -> forall y : A, x = y -> P y
 *)
 
-Inductive eq' (A : Type) : A -> A -> Prop
-  :=  eq'_refl (x : A) : eq' A x x.
+Inductive eq1 (A:Type) (x:A) : A -> Prop :=
+  eq1_refl : eq1 A x x.
 
+Definition eq1_rect' : forall (A : Type) (x : A) (P : A -> Type),
+       P x -> forall y : A, eq1 A x y -> P y := 
+fun (A : Type) (x : A) (P : A -> Type) (f : P x) (y : A) (e : eq1 A x y) =>
+match e in (eq1 _ _ y0) return (P y0) with
+| eq1_refl _ _ => f
+end.
+
+Inductive eq2 (A : Type) : A -> A -> Prop :=
+  eq2_refl (x : A) : eq2 A x x.
+
+(*
+Fails.
+
+Definition eq2_rect : forall (A : Type) (P : A -> A -> Type),
+       (forall x : A, P x x) -> forall y y0 : A, eq2 A y y0 -> P y y0 := 
+fun (A : Type) (P : A -> A -> Type) (f : forall x : A, P x x) 
+  (y y0 : A) (e : eq2 A y y0) =>
+match e in (eq2 _ y1 y2) return (P y1 y2) with
+| eq2_refl _ x => f x
+end.
+*)
+    
 (*
 eq'_ind = 
 fun (A : Type) (P : A -> A -> Prop) (f : forall x : A, P x x) 
