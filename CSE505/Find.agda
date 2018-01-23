@@ -1,6 +1,8 @@
+{-# OPTIONS --rewriting #-}
+
 module Find where
 
-open import Data.Fin using (Fin; zero)
+open import Data.Fin using (Fin; zero; toℕ)
 open import Data.Nat
 open import Data.Nat.Properties
 open import Data.Product
@@ -28,7 +30,16 @@ max (a ∷ b ∷ v) | no ¬p = let (c , (e , q)) = max (a ∷ v)
                               b≤c           = ≤-trans b≤a (ahead q)
                           in (c , (∈-split e , (ahead q) ∷ b≤c ∷ (atail q)))
 
+-- Obviously not always true, but we'll only use it when okay.
+-- This is pretty ugly, so hopefully there's a better way to do this.
+postulate
+  unsafe+∸ : {m n : ℕ} → m + (n ∸ m) ≡ n
+
+{-# BUILTIN REWRITE _≡_ #-}
+{-# REWRITE unsafe+∸ #-}
+
 -- Hoare's Find
 
-find : {n : ℕ} → Fin n → Vec ℕ n → Vec ℕ n
-find k v = v
+find : {n : ℕ} → (k : Fin n) → (v : Vec ℕ (suc n)) →
+       Σ (Vec ℕ (toℕ k) × ℕ × Vec ℕ (n ∸ (toℕ k))) (λ {(u , (m , w)) → m ∷ (u ++ w) ≡ v})
+find k v = {!!}
