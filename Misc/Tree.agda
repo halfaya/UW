@@ -2,7 +2,6 @@ module Tree where
 
 open import Data.Nat
 open import Data.Nat.Properties
-open import Data.Bool
 open import Relation.Binary.PropositionalEquality
 
 data Tree : Set where
