@@ -35,11 +35,15 @@ max (a ∷ b ∷ v) | no ¬p = let (c , (e , q)) = max (a ∷ v)
 postulate
   unsafe+∸ : {m n : ℕ} → m + (n ∸ m) ≡ n
 
-{-# BUILTIN REWRITE _≡_ #-}
-{-# REWRITE unsafe+∸ #-}
+--{-# BUILTIN REWRITE _≡_ #-}
+--{-# REWRITE unsafe+∸ #-}
 
 -- Hoare's Find
 
 find : {n : ℕ} → (k : Fin n) → (v : Vec ℕ (suc n)) →
-       Σ (Vec ℕ (toℕ k) × ℕ × Vec ℕ (n ∸ (toℕ k))) (λ {(u , (m , w)) → m ∷ (u ++ w) ≡ v})
+       Σ (Vec ℕ (toℕ k) × ℕ × Vec ℕ (n ∸ (toℕ k))) (λ {(u , (m , w)) → subst (Vec ℕ) (unsafe+∸ {suc (toℕ k)}) (m ∷ (u ++ w)) ≡ v})
 find k v = {!!}
+
+find' : (m n : ℕ) → (v : Vec ℕ (suc (m + n))) →
+       Σ (Vec ℕ m × ℕ × Vec ℕ n) (λ {(u , (m , w)) → m ∷ (u ++ w) ≡ v})
+find' k v = {!!}
