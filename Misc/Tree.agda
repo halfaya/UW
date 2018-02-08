@@ -22,7 +22,7 @@ data Complete : Tree → Set where
   node : {t₁ t₂ : Tree} → Complete t₁ → Complete t₂ → height t₁ ≡ height t₂ → Complete (node t₁ t₂)
 
 completeTreeNumLeaves : (t : Tree) → Complete t → numLeaves t ≡ 2 ^ (height t)
-completeTreeNumLeaves leaf         leaf           = refl
+completeTreeNumLeaves leaf         leaf               = refl
 completeTreeNumLeaves (node t₁ t₂) (node c₁ c₂ h₁≡h₂) rewrite h₁≡h₂ | ⊔-idem (height t₂) | +-identityʳ (2 ^ height t₂) =
   let a  : numLeaves t₁ ≡ (2 ^ height t₁)                                  ; a  = completeTreeNumLeaves t₁ c₁
       b  : numLeaves t₂ ≡ (2 ^ height t₂)                                  ; b  = completeTreeNumLeaves t₂ c₂
