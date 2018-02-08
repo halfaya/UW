@@ -27,7 +27,7 @@ completeTreeNumLeaves (node t₁ t₂) (node c₁ c₂ h₁≡h₂) rewrite h₁
   let a  : numLeaves t₁ ≡ (2 ^ height t₁)                                  ; a  = completeTreeNumLeaves t₁ c₁
       b  : numLeaves t₂ ≡ (2 ^ height t₂)                                  ; b  = completeTreeNumLeaves t₂ c₂
       a' : numLeaves t₁ ≡ (2 ^ height t₂)                                  ; a' = subst (λ n → numLeaves t₁ ≡ 2 ^ n) h₁≡h₂ a
-      c  : numLeaves t₁ + numLeaves t₂ ≡ (2 ^ height t₂) + (2 ^ height t₂) ; c = a+b≡c+d a' b
+      c  : numLeaves t₁ + numLeaves t₂ ≡ (2 ^ height t₂) + (2 ^ height t₂) ; c  = a+b≡c+d a' b
   in c
   where a+b≡c+d : {a b c d : ℕ} → a ≡ c → b ≡ d → a + b ≡ c + d
         a+b≡c+d refl refl = refl
