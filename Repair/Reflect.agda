@@ -38,12 +38,15 @@ map f (x ∷ xs) = f x ∷ map f xs
 err : {A : Set} → String → TC A
 err = typeError ∘ map strErr ∘ (λ x → "Error:\n" ∷ x ∷ [])
 
+errName : {A : Set} → Name → TC A
+errName = typeError ∘ map strErr ∘ (λ x → "ErrorName:\n" ∷ primShowQName x ∷ [])
+
 firstConstructor : Definition → TC Name
 firstConstructor (function cs)             = err "bad function"
 firstConstructor (data-type pars [])       = err "empty data-type"
 firstConstructor (data-type pars (n ∷ _)) = returnTC n
 --firstConstructor (data-type pars (_ ∷ n ∷ ns)) = returnTC n
-firstConstructor (record-type c)           = err "bad record-type"
+firstConstructor (record-type c _)         = err "bad record-type"
 firstConstructor (data-cons d)             = err "bad data-cons"
 firstConstructor axiom                     = err "bad axiom"
 firstConstructor prim-fun                  = err "bad prim-fun"
@@ -51,8 +54,8 @@ firstConstructor prim-fun                  = err "bad prim-fun"
 getFunction : Definition → TC (List Clause)
 getFunction (function cs)       = returnTC cs
 getFunction (data-type pars cs) = err "bad data-type"
-getFunction (record-type c)     = err "bad record-type"
-getFunction (data-cons d)       = err "bad data-cons"
+getFunction (record-type c _)   = err "bad record-type"
+getFunction (data-cons d)       = errName d
 getFunction axiom               = err "bad axiom"
 getFunction prim-fun            = err "bad prim-fun"
 
@@ -75,8 +78,8 @@ macro
 s : Name
 s = getdef Nat
 
-t : Set
-t = getTyp1 Nat
+t : Set₁
+t = getTyp Nat
 
 --u : Set
---u = getfun _+_
+--u = getfun zero
