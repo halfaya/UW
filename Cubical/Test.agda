@@ -24,9 +24,10 @@ open import Data.Vec
 Σ-eq₂ = cong snd
 
 -- Generalization of cong to paths. Might be in the Cubical library somewhere.
-congPath : {a b : Level} {A : Set a} {B : A → Set b} (f : (a : A) → B a) → {x y : A} → 
-  (p : x ≡ y) → PathP (λ i → B (p i)) (f x) (f y)
-congPath f p i = f (p i)
+congPath : {a b : Level} {A : I → Set a} {B : (r : I) → A r → Set b}
+  (f : (r : I) → (a : A r) → B r a) → {x : A i0} → {y : A i1} → 
+  (p : PathP A x y) → PathP (λ i → B i (p i)) (f i0 x) (f i1 y)
+congPath f p i = f i (p i)
 
 {-
 ΣPathP : ∀ {x y}
