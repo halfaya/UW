@@ -24,12 +24,6 @@ open import Data.Vec
   PathP (λ i → B (fst (e i))) (snd p) (snd q)
 Σ-eq₂ = cong snd
 
--- Generalization of cong to paths. Might be in the Cubical library somewhere.
-congPath : {a b : Level} {A : I → Set a} {B : (r : I) → A r → Set b}
-  (f : {r : I} → (a : A r) → B r a) → {x : A i0} → {y : A i1} → 
-  (p : PathP A x y) → PathP (λ i → B i (p i)) (f {i0} x) (f {i1} y)
-congPath f p i = f {i} (p i)
-
 module _ {ℓ} {A : Type ℓ} where
 
   List→Vec : List A → Σ ℕ (Vec A)
@@ -42,15 +36,11 @@ module _ {ℓ} {A : Type ℓ} where
 
   List→Vec→List : (xs : List A) → Vec→List (List→Vec xs) ≡ xs
   List→Vec→List []       = refl
-  List→Vec→List (x ∷ xs) = let a = List→Vec→List xs in {!!}
+  List→Vec→List (x ∷ xs) = cong (x ∷_) (List→Vec→List xs)
 
   Vec→List→Vec : (v : Σ ℕ (Vec A)) → List→Vec (Vec→List v) ≡ v
   Vec→List→Vec (zero , [])      = refl
-  Vec→List→Vec (suc n , x ∷ xs) =
-    let a : List→Vec (Vec→List (n , xs)) ≡ (n , xs)                                     ; a = Vec→List→Vec (n , xs)
-        b : suc (fst (List→Vec (Vec→List (n , xs)))) ≡ suc n                            ; b = cong suc (Σ-eq₁ a)
-        c : PathP (λ i → Vec A (b i)) (x ∷ snd (List→Vec (Vec→List (n , xs)))) (x ∷ xs) ; c = congPath (x ∷_) (Σ-eq₂ a)
-    in ΣPathP (b , c)
+  Vec→List→Vec (suc n , x ∷ xs) = cong (λ p → (suc (fst p) , x ∷ snd p)) (Vec→List→Vec (n , xs))
 
   List≃Vec : List A ≃ Σ ℕ (Vec A)
   List≃Vec = isoToEquiv (iso List→Vec Vec→List Vec→List→Vec List→Vec→List)
