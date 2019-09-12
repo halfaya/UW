@@ -1,22 +1,20 @@
-{-# OPTIONS --cubical --safe #-}
+{-# OPTIONS --safe #-}
 
-module Test where
+module ListVecNonCubical where
 
-open import Cubical.Core.Everything
+open import Agda.Builtin.Sigma
+open import Agda.Primitive using (Level)
 
-open import Cubical.Foundations.Prelude
-open import Cubical.Foundations.Equiv
-open import Cubical.Foundations.Univalence
-open import Cubical.Foundations.Isomorphism
-
-open import Cubical.Data.Nat
-open import Agda.Builtin.List
+open import Data.List
+open import Data.Nat
 open import Data.Vec
+
+open import Relation.Binary.PropositionalEquality
 
 private
   variable
     ℓ : Level
-    A : Type ℓ
+    A B C : Set ℓ
 
 List→Vec : List A → Σ ℕ (Vec A)
 List→Vec []       = 0 , []
@@ -33,13 +31,3 @@ List→Vec→List (x ∷ xs) = cong (x ∷_) (List→Vec→List xs)
 Vec→List→Vec : (v : Σ ℕ (Vec A)) → List→Vec (Vec→List v) ≡ v
 Vec→List→Vec (zero , [])      = refl
 Vec→List→Vec (suc n , x ∷ xs) = cong (λ p → (suc (fst p) , x ∷ snd p)) (Vec→List→Vec (n , xs))
-
-List≃Vec : List A ≃ Σ ℕ (Vec A)
-List≃Vec = isoToEquiv (iso List→Vec Vec→List Vec→List→Vec List→Vec→List)
-
-List≡Vec : List A ≡ Σ ℕ (Vec A)
-List≡Vec = ua List≃Vec
-
--- Alternative direct proof without going through equivalences
-List≡Vec' : List A ≡ Σ ℕ (Vec A)
-List≡Vec' = isoToPath (iso List→Vec Vec→List Vec→List→Vec List→Vec→List)
