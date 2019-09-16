@@ -1,6 +1,6 @@
 {-# OPTIONS --cubical --safe #-}
 
-module ListVec where
+module ListVec2 where
 
 open import Cubical.Core.Everything using (_≡_; Level; Type; Σ; _,_; fst; snd; _≃_; ~_)
 
@@ -16,16 +16,16 @@ open import Data.Product using (_×_)
 open import Data.Unit using (⊤; tt)
 open import Data.Vec using (Vec; []; _∷_)
 
-open import Lemmas
+Vec→List : {ℓ : Level}{A : Type ℓ}{n : ℕ} → Vec A n → Σ (List A) (λ a → length a ≡ n)
+Vec→List {n = .0} [] = [] , refl
+Vec→List {n = .(suc _)} (x ∷ xs) = let (ys , p) = Vec→List xs in x ∷ ys , {!!}
 
-List→Vec : {ℓ : Level}{A : Type ℓ} → List A → Σ ℕ (Vec A)
-List→Vec []       = 0 , []
-List→Vec (x ∷ xs) = let (n , ys) = List→Vec xs in (suc n , x ∷ ys)
+List→Vec : {ℓ : Level}{A : Type ℓ}{n : ℕ} → Σ (List A) (λ a → length a ≡ n) → Vec A n
+List→Vec {A = A} ([] , p) = subst (Vec A) p []
+List→Vec {n = zero}  (x ∷ xs , p) = {!!}
+List→Vec {n = suc n} (x ∷ xs , p) = {!!} --let a = List→Vec (xs , {!!}) in {!!} 
 
-Vec→List : {ℓ : Level}{A : Type ℓ} → Σ ℕ (Vec A) → List A
-Vec→List (zero  , [])     = []
-Vec→List (suc n , x ∷ xs) = x ∷ Vec→List (n , xs)
-
+{-
 List→Vec→List : {ℓ : Level}{A : Type ℓ} → (xs : List A) → Vec→List (List→Vec xs) ≡ xs
 List→Vec→List []       = refl
 List→Vec→List (x ∷ xs) = cong (x ∷_) (List→Vec→List xs)
@@ -92,22 +92,4 @@ v3 = zipV v1 v2
 
 v1' : Σ ℕ (Vec ℕ)
 v1' = transport List≡Vec l1
-
-----------------------------
-
--- Derivation of Vector Zip
-
-zipMin : {ℓ : Level}{A B : Type ℓ} → (a : List A) → (b : List B) → length (zip a b) ≡ min (length a) (length b)
-zipMin []       _        = refl
-zipMin (_ ∷ _)  []       = refl
-zipMin (x ∷ xs) (y ∷ ys) = lengthSuc (x , y) (zip xs ys) (zipMin xs ys)
-
-zipEq : {ℓ : Level}{A B : Type ℓ} → (a : List A) → (b : List B) → length a ≡ length b → length (zip a b) ≡ length a
-zipEq  a b e = zipMin a b □ minEq (length a) (length b) e
-
-zipV1 : {ℓ : Level}{A B : Type ℓ}{m n : ℕ} → (a : Vec A m) → (b : Vec B n) → m ≡ n → Vec (A × B) m
-zipV1             []       _  _       = []
-zipV1 {_} {A} {B} (_ ∷ _)  [] e       = subst (Vec (A × B)) (sym e) []
-zipV1             (a ∷ as) (b ∷ bs) e = (a , b) ∷ zipV1 as bs (suc-injective e)
-
---zipV1 : {ℓ : Level}{A B : Type ℓ}{m n : ℕ} → (a : Vec A m) → (b : Vec B n) → m ≡ length b → length (zip a b) ≡ length a
+-}
