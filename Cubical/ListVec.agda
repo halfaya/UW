@@ -9,7 +9,6 @@ open import Cubical.Foundations.Equiv using (isoToEquiv)
 open import Cubical.Foundations.Univalence using (ua)
 open import Cubical.Foundations.Isomorphism using (iso; isoToPath)
 
-open import Data.Empty using (⊥; ⊥-elim)
 open import Data.List using (List; length; []; _∷_)
 open import Data.Nat.Base using (ℕ; zero; suc)
 open import Data.Product using (_×_)
@@ -100,7 +99,7 @@ v1' = transport List≡Vec l1
 zipMin : {ℓ : Level}{A B : Type ℓ} → (a : List A) → (b : List B) → length (zip a b) ≡ min (length a) (length b)
 zipMin []       _        = refl
 zipMin (_ ∷ _)  []       = refl
-zipMin (x ∷ xs) (y ∷ ys) = lengthSuc (x , y) (zip xs ys) (zipMin xs ys)
+zipMin (x ∷ xs) (y ∷ ys) = cong suc (zipMin xs ys)
 
 zipEq : {ℓ : Level}{A B : Type ℓ} → (a : List A) → (b : List B) → length a ≡ length b → length (zip a b) ≡ length a
 zipEq  a b e = zipMin a b □ minEq (length a) (length b) e
