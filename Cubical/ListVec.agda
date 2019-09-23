@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --safe #-}
+{-# OPTIONS --cubical #-} -- TODO: re-add safe
 
 module ListVec where
 
@@ -7,7 +7,7 @@ open import Cubical.Core.Everything using (_≡_; Level; Type; Σ; _,_; fst; snd
 open import Cubical.Foundations.Prelude using (refl; sym; _□_; cong; transport; subst)
 open import Cubical.Foundations.Equiv using (isoToEquiv)
 open import Cubical.Foundations.Univalence using (ua)
-open import Cubical.Foundations.Isomorphism using (iso; isoToPath)
+open import Cubical.Foundations.Isomorphism using (iso; Iso; isoToPath)
 
 open import Data.List using (List; length; []; _∷_)
 open import Data.Nat.Base using (ℕ; zero; suc)
@@ -33,8 +33,11 @@ Vec→List→Vec : {ℓ : Level}{A : Type ℓ} → (v : Σ ℕ (Vec A)) → List
 Vec→List→Vec (zero , [])      = refl
 Vec→List→Vec (suc n , x ∷ xs) = cong (λ p → (suc (fst p) , x ∷ snd p)) (Vec→List→Vec (n , xs))
 
+isoListVec : {ℓ : Level}{A : Type ℓ} → Iso (List A) (Σ ℕ (Vec A))
+isoListVec = iso List→Vec Vec→List Vec→List→Vec List→Vec→List
+
 List≃Vec : {ℓ : Level}{A : Type ℓ} → List A ≃ Σ ℕ (Vec A)
-List≃Vec = isoToEquiv (iso List→Vec Vec→List Vec→List→Vec List→Vec→List)
+List≃Vec = isoToEquiv isoListVec
 
 List≡Vec : {ℓ : Level}{A : Type ℓ} → List A ≡ Σ ℕ (Vec A)
 List≡Vec = ua List≃Vec
@@ -110,3 +113,11 @@ zipV1 {_} {A} {B} (_ ∷ _)  [] e       = subst (Vec (A × B)) (sym e) []
 zipV1             (a ∷ as) (b ∷ bs) e = (a , b) ∷ zipV1 as bs (suc-injective e)
 
 --zipV1 : {ℓ : Level}{A B : Type ℓ}{m n : ℕ} → (a : Vec A m) → (b : Vec B n) → m ≡ length b → length (zip a b) ≡ length a
+
+-----------
+
+bbb : (T : Set) → Iso (List T) (Σ ℕ (Vec T)) → Σ (List T → ℕ) (λ f → (n : ℕ) → Iso (Vec T n) (Σ (List T) (λ xs → f xs ≡ n)))
+bbb T = aaa ℕ (List T) (Vec T)
+
+ccc : (T : Set) → Σ (List T → ℕ) (λ f → (n : ℕ) → Iso (Vec T n) (Σ (List T) (λ xs → f xs ≡ n)))
+ccc T = bbb T isoListVec

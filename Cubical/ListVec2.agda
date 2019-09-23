@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --safe #-}
+{-# OPTIONS --cubical #-} -- TODO: re-add safe
 
 module ListVec2 where
 
@@ -29,7 +29,7 @@ List→Vec {n = suc n} (x ∷ xs , p) = x ∷ List→Vec (xs , cong pred p)
 
 Vec→List→Vec : {ℓ : Level}{A : Type ℓ}{n : ℕ} → (v : Vec A n) → List→Vec (Vec→List v) ≡ v
 Vec→List→Vec []       = refl
-Vec→List→Vec (x ∷ xs) = let y = Vec→List→Vec in 
+Vec→List→Vec (x ∷ xs) = let y = Vec→List→Vec in {!!}
 
 List→Vec→List : {ℓ : Level}{A : Type ℓ}{n : ℕ} → (v : Σ (List A) (λ as → length as ≡ n)) → Vec→List (List→Vec v) ≡ v
 List→Vec→List {n = zero} ([] , p)      = {!!}
