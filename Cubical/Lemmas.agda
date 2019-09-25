@@ -1,11 +1,10 @@
-{-# OPTIONS --cubical #-}
-{-# OPTIONS --allow-unsolved-metas #-} -- TODO: Remove this and re-add safe
+{-# OPTIONS --cubical --safe #-}
 
 module Lemmas where
 
 open import Cubical.Core.Everything using (_≡_; Level; Type; Σ; _,_; fst; snd)
 
-open import Cubical.Foundations.Prelude using (subst; sym; refl; cong)
+open import Cubical.Foundations.Prelude using (subst; sym; refl; cong; ~_; transp; i0; i1)
 open import Cubical.Foundations.Isomorphism using (Iso; iso; section; retract)
 
 open import Data.Empty using (⊥; ⊥-elim)
@@ -48,15 +47,3 @@ minEq (suc a) (suc b) e = cong suc (minEq a b (suc-injective e))
 -- Use □ instead, but as suggested by Jesper this is another way to define transitivity.
 trans : {ℓ : Level}{A : Type ℓ}{x y z : A} → x ≡ y → y ≡ z → x ≡ z
 trans {x = x} x≡y y≡z = subst (x ≡_) y≡z x≡y
-
-------------
-
-aaa : (I A : Set)(B : I → Set) →
-      Iso A (Σ I B) →
-      Σ (A → I) (λ f → (i : I) → Iso (B i) (Σ A (λ a → f a ≡ i)))
-aaa I A B (iso fun inv rightInv leftInv)
-  = fst ∘ fun , λ i → iso
-      (λ b → inv (i , b) , subst (λ x → fst x ≡ i) (sym (rightInv (i , b))) refl)
-      (λ ae → subst B (snd ae) (snd (fun (fst ae))))
-      {!!}
-      {!!}

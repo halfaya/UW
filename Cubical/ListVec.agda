@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical #-} -- TODO: re-add safe
+{-# OPTIONS --cubical --safe #-}
 
 module ListVec where
 
@@ -7,13 +7,15 @@ open import Cubical.Core.Everything using (_≡_; Level; Type; Σ; _,_; fst; snd
 open import Cubical.Foundations.Prelude using (refl; sym; _□_; cong; transport; subst)
 open import Cubical.Foundations.Equiv using (isoToEquiv)
 open import Cubical.Foundations.Univalence using (ua)
-open import Cubical.Foundations.Isomorphism using (iso; Iso; isoToPath)
+open import Cubical.Foundations.Isomorphism using (iso; Iso; isoToPath; section; retract)
 
 open import Data.List using (List; length; []; _∷_)
 open import Data.Nat.Base using (ℕ; zero; suc)
 open import Data.Product using (_×_)
 open import Data.Unit using (⊤; tt)
 open import Data.Vec using (Vec; []; _∷_)
+
+open import Function using (_∘_)
 
 open import Lemmas
 
@@ -116,8 +118,21 @@ zipV1             (a ∷ as) (b ∷ bs) e = (a , b) ∷ zipV1 as bs (suc-injecti
 
 -----------
 
-bbb : (T : Set) → Iso (List T) (Σ ℕ (Vec T)) → Σ (List T → ℕ) (λ f → (n : ℕ) → Iso (Vec T n) (Σ (List T) (λ xs → f xs ≡ n)))
-bbb T = aaa ℕ (List T) (Vec T)
+aaa : {ι ℓ ℓ′ : Level}{I : Type ι}(A : Type ℓ)(B : I → Type ℓ′) →
+      (e : Iso A (Σ I B)) →
+      (i : I) → Iso (B i) (Σ A (λ a → (fst ∘ Iso.fun e) a ≡ i))
+aaa A B (iso fun inv rightInv leftInv) i
+  = iso
+      (λ b → inv (i , b) , subst (λ x → fst x ≡ i) (sym (rightInv (i , b))) refl)
+      (λ ae → subst B (snd ae) ((snd ∘ fun ∘ fst) ae))
+      {!!}
+      {!!}
 
-ccc : (T : Set) → Σ (List T → ℕ) (λ f → (n : ℕ) → Iso (Vec T n) (Σ (List T) (λ xs → f xs ≡ n)))
-ccc T = bbb T isoListVec
+bbb : {ℓ : Level}{A : Type ℓ} →
+      (e : Iso (List A) (Σ ℕ (Vec A))) → (n : ℕ) → Iso (Vec A n) (Σ (List A) (λ xs → (fst ∘ Iso.fun e) xs ≡ n))
+bbb {A = A} = aaa (List A) (Vec A)
+
+ccc : {ℓ : Level}{A : Type ℓ} → (n : ℕ) → Iso (Vec A n) (Σ (List A) (λ xs → (fst ∘ List→Vec) xs ≡ n))
+ccc = bbb isoListVec
+
+--len= : {ℓ : Level}{A : Type ℓ} → (xs : List A) → 
