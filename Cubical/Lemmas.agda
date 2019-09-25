@@ -4,6 +4,7 @@ module Lemmas where
 
 open import Cubical.Core.Everything using (_≡_; Level; Type; Σ; _,_; fst; snd)
 
+open import Cubical.Foundations.Function using (_∘_)
 open import Cubical.Foundations.Prelude using (subst; sym; refl; cong; ~_; transp; i0; i1)
 open import Cubical.Foundations.Isomorphism using (Iso; iso; section; retract)
 
@@ -12,7 +13,6 @@ open import Data.List using (List; length; []; _∷_)
 open import Data.Nat.Base using (ℕ; zero; suc)
 open import Data.Unit using (⊤; tt)
 
-open import Function using (_∘_)
 
 min : ℕ → ℕ → ℕ
 min zero    _       = zero
