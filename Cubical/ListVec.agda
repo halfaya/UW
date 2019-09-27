@@ -4,7 +4,7 @@ module ListVec where
 
 open import Cubical.Core.Everything using (_≡_; Level; Type; Σ; _,_; fst; snd; _≃_; ~_)
 
-open import Cubical.Foundations.Prelude using (refl; sym; _□_; cong; transport; subst)
+open import Cubical.Foundations.Prelude using (refl; sym; _□_; cong; transport; subst; transp; i0; i1)
 open import Cubical.Foundations.Equiv using (isoToEquiv)
 open import Cubical.Foundations.Univalence using (ua)
 open import Cubical.Foundations.Isomorphism using (iso; Iso; isoToPath; section; retract)
@@ -118,6 +118,8 @@ zipV1             (a ∷ as) (b ∷ bs) e = (a , b) ∷ zipV1 as bs (suc-injecti
 
 -----------
 
+
+
 aaa : {ι ℓ ℓ′ : Level}{I : Type ι}(A : Type ℓ)(B : I → Type ℓ′) →
       (e : Iso A (Σ I B)) →
       (i : I) → Iso (B i) (Σ A (λ a → (fst ∘ Iso.fun e) a ≡ i))
@@ -125,8 +127,21 @@ aaa A B (iso fun inv rightInv leftInv) i
   = iso
       (λ b → inv (i , b) , subst (λ x → fst x ≡ i) (sym (rightInv (i , b))) refl)
       (λ ae → subst B (snd ae) ((snd ∘ fun ∘ fst) ae))
-      {!!}
-      {!!}
+      sec
+      ret
+  where
+    sec : (ae : Σ A (λ a → fst (fun a) ≡ i)) → 
+          (inv (i , subst B (snd ae) (snd (fun (fst ae)))) ,
+           subst (λ x → fst x ≡ i) (sym (rightInv (i , subst B (snd ae) (snd (fun (fst ae)))))) refl) ≡ ae
+    sec (a , e) = {!!}
+    ret : retract
+            (λ b →
+              inv (i , b) ,
+              subst (λ x → fst x ≡ i) (λ i₁ → rightInv (i , b) (~ i₁)) (λ _ → i))
+            (λ ae → subst B (snd ae) (snd (fun (fst ae))))
+--    ret : (b : B i) → subst B (snd (inv (i , b) , subst (λ x → fst x ≡ i) (sym (rightInv (i , b))) refl))
+--                      ((snd ∘ fun ∘ fst) (inv (i , b) , subst (λ x → fst x ≡ i) (sym (rightInv (i , b))) refl)) ≡ b
+    ret = {!!}
 
 bbb : {ℓ : Level}{A : Type ℓ} →
       (e : Iso (List A) (Σ ℕ (Vec A))) → (n : ℕ) → Iso (Vec A n) (Σ (List A) (λ xs → (fst ∘ Iso.fun e) xs ≡ n))
