@@ -4,8 +4,9 @@ module ListVec where
 
 open import Cubical.Core.Everything using (_≡_; Level; Type; Σ; _,_; fst; snd; _≃_; ~_)
 
-open import Cubical.Foundations.Prelude using (refl; sym; _□_; cong; transport; subst; transp; i0; i1)
+open import Cubical.Foundations.Prelude using (refl; sym; _□_; cong; transport; subst; funExt; transp; i0; i1)
 open import Cubical.Foundations.Equiv using (isoToEquiv)
+open import Cubical.Foundations.Function using (_∘_)
 open import Cubical.Foundations.Univalence using (ua)
 open import Cubical.Foundations.Isomorphism using (iso; Iso; isoToPath; section; retract)
 
@@ -14,8 +15,6 @@ open import Data.Nat.Base using (ℕ; zero; suc)
 open import Data.Product using (_×_)
 open import Data.Unit using (⊤; tt)
 open import Data.Vec using (Vec; []; _∷_)
-
-open import Function using (_∘_)
 
 open import Lemmas
 
@@ -122,8 +121,8 @@ zipV1             (a ∷ as) (b ∷ bs) e = (a , b) ∷ zipV1 as bs (suc-injecti
 
 aaa : {ι ℓ ℓ′ : Level}{I : Type ι}(A : Type ℓ)(B : I → Type ℓ′) →
       (e : Iso A (Σ I B)) →
-      (i : I) → Iso (B i) (Σ A (λ a → (fst ∘ Iso.fun e) a ≡ i))
-aaa A B (iso fun inv rightInv leftInv) i
+      {i : I} → Iso (B i) (Σ A (λ a → (fst ∘ Iso.fun e) a ≡ i))
+aaa A B (iso fun inv rightInv leftInv) {i}
   = iso
       (λ b → inv (i , b) , subst (λ x → fst x ≡ i) (sym (rightInv (i , b))) refl)
       (λ ae → subst B (snd ae) ((snd ∘ fun ∘ fst) ae))
@@ -144,10 +143,23 @@ aaa A B (iso fun inv rightInv leftInv) i
     ret = {!!}
 
 bbb : {ℓ : Level}{A : Type ℓ} →
-      (e : Iso (List A) (Σ ℕ (Vec A))) → (n : ℕ) → Iso (Vec A n) (Σ (List A) (λ xs → (fst ∘ Iso.fun e) xs ≡ n))
+      (e : Iso (List A) (Σ ℕ (Vec A))) → {n : ℕ} → Iso (Vec A n) (Σ (List A) (λ xs → (fst ∘ Iso.fun e) xs ≡ n))
 bbb {A = A} = aaa (List A) (Vec A)
 
-ccc : {ℓ : Level}{A : Type ℓ} → (n : ℕ) → Iso (Vec A n) (Σ (List A) (λ xs → (fst ∘ List→Vec) xs ≡ n))
+ccc : {ℓ : Level}{A : Type ℓ}{n : ℕ} → Iso (Vec A n) (Σ (List A) (λ xs → (fst ∘ List→Vec) xs ≡ n))
 ccc = bbb isoListVec
 
---len= : {ℓ : Level}{A : Type ℓ} → (xs : List A) → 
+len= : {ℓ : Level}{A : Type ℓ} → (xs : List A) → (fst ∘ List→Vec) xs ≡ length xs
+len= []       = refl
+len= (x ∷ xs) = cong suc (len= xs)
+
+len≡ : {ℓ : Level}{A : Type ℓ} → fst ∘ List→Vec {ℓ} {A} ≡ length
+len≡ = funExt len=
+
+-- Could possibly prove this without funExt
+ddd : {ℓ : Level}{A : Type ℓ}{n : ℕ} → Iso (Vec A n) (Σ (List A) (λ xs → length xs ≡ n))
+ddd {ℓ} {A} {n} = subst (λ (f : List A → ℕ) → Iso (Vec A n) (Σ (List A) (λ xs → f xs ≡ n))) len≡ ccc
+
+-- Type is identical to Vec≡List in ListVec2.agda
+Vec≡List' : {ℓ : Level}{A : Type ℓ}{n : ℕ} → Vec A n ≡ Σ (List A) (λ xs → length xs ≡ n)
+Vec≡List' = isoToPath ddd
