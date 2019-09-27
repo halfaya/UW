@@ -4,7 +4,7 @@ module ListVec where
 
 open import Cubical.Core.Everything using (_≡_; Level; Type; Σ; _,_; fst; snd; _≃_; ~_)
 
-open import Cubical.Foundations.Prelude using (refl; sym; _□_; cong; transport; subst; funExt; transp; i0; i1)
+open import Cubical.Foundations.Prelude using (refl; sym; _□_; cong; transport; subst; funExt; transp; I; i0; i1)
 open import Cubical.Foundations.Equiv using (isoToEquiv)
 open import Cubical.Foundations.Function using (_∘_)
 open import Cubical.Foundations.Univalence using (ua)
@@ -119,25 +119,22 @@ zipV1             (a ∷ as) (b ∷ bs) e = (a , b) ∷ zipV1 as bs (suc-injecti
 
 
 
-aaa : {ι ℓ ℓ′ : Level}{I : Type ι}(A : Type ℓ)(B : I → Type ℓ′) →
-      (e : Iso A (Σ I B)) →
-      {i : I} → Iso (B i) (Σ A (λ a → (fst ∘ Iso.fun e) a ≡ i))
-aaa A B (iso fun inv rightInv leftInv) {i}
+aaa : {ι ℓ ℓ′ : Level}{J : Type ι}(A : Type ℓ)(B : J → Type ℓ′) →
+      (e : Iso A (Σ J B)) →
+      {j : J} → Iso (B j) (Σ A (λ a → (fst ∘ Iso.fun e) a ≡ j))
+aaa A B (iso fun inv rightInv leftInv) {j}
   = iso
-      (λ b → inv (i , b) , subst (λ x → fst x ≡ i) (sym (rightInv (i , b))) refl)
+      (λ b → inv (j , b) , subst (λ x → fst x ≡ j) (sym (rightInv (j , b))) refl)
       (λ ae → subst B (snd ae) ((snd ∘ fun ∘ fst) ae))
       sec
       ret
   where
-    sec : (ae : Σ A (λ a → fst (fun a) ≡ i)) → 
-          (inv (i , subst B (snd ae) (snd (fun (fst ae)))) ,
-           subst (λ x → fst x ≡ i) (sym (rightInv (i , subst B (snd ae) (snd (fun (fst ae)))))) refl) ≡ ae
+    sec : (ae : Σ A (λ a → fst (fun a) ≡ j)) → 
+          (inv (j , subst B (snd ae) (snd (fun (fst ae)))) ,
+           subst (λ x → fst x ≡ j) (sym (rightInv (j , subst B (snd ae) (snd (fun (fst ae)))))) refl) ≡ ae
     sec (a , e) = {!!}
-    ret : retract
-            (λ b →
-              inv (i , b) ,
-              subst (λ x → fst x ≡ i) (λ i₁ → rightInv (i , b) (~ i₁)) (λ _ → i))
-            (λ ae → subst B (snd ae) (snd (fun (fst ae))))
+    ret : retract (λ b → inv (j , b) , subst (λ x → fst x ≡ j) (sym (rightInv (j , b))) refl)
+                  (λ ae → subst B (snd ae) ((snd ∘ fun ∘ fst) ae))
 --    ret : (b : B i) → subst B (snd (inv (i , b) , subst (λ x → fst x ≡ i) (sym (rightInv (i , b))) refl))
 --                      ((snd ∘ fun ∘ fst) (inv (i , b) , subst (λ x → fst x ≡ i) (sym (rightInv (i , b))) refl)) ≡ b
     ret = {!!}
