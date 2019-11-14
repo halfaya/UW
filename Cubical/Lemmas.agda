@@ -5,14 +5,13 @@ module Lemmas where
 open import Cubical.Core.Everything using (_≡_; Level; Type; Σ; _,_; fst; snd)
 
 open import Cubical.Foundations.Function using (_∘_)
-open import Cubical.Foundations.Prelude using (subst; sym; refl; cong; ~_; transp; i0; i1)
+open import Cubical.Foundations.Prelude using (subst; sym; refl; cong; ~_; transp; i0; i1; transport)
 open import Cubical.Foundations.Isomorphism using (Iso; iso; section; retract)
 
 open import Data.Empty using (⊥; ⊥-elim)
 open import Data.List using (List; length; []; _∷_)
 open import Data.Nat.Base using (ℕ; zero; suc)
 open import Data.Unit using (⊤; tt)
-
 
 min : ℕ → ℕ → ℕ
 min zero    _       = zero
@@ -24,7 +23,7 @@ NonZero : ℕ → Set
 NonZero zero    = ⊥
 NonZero (suc n) = ⊤
 
--- Thanks Jasper for this.
+-- Thanks Jesper for this.
 -- Proves both disjointness and injectivity.
 NoConfusion : ℕ → ℕ → Set
 NoConfusion zero zero       = ⊤
@@ -47,3 +46,7 @@ minEq (suc a) (suc b) e = cong suc (minEq a b (suc-injective e))
 -- Use □ instead, but as suggested by Jesper this is another way to define transitivity.
 trans : {ℓ : Level}{A : Type ℓ}{x y z : A} → x ≡ y → y ≡ z → x ≡ z
 trans {x = x} x≡y y≡z = subst (x ≡_) y≡z x≡y
+
+--another way to define subst
+subst' : {A : Set}(B : A → Set) {x y : A} → x ≡ y → B x → B y
+subst' B = transport ∘ cong B

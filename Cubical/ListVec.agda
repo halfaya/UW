@@ -50,113 +50,51 @@ Vec≡List {ℓ} {A} i = List≡Vec {ℓ} {A} (~ i)
 List≡Vec' : {ℓ : Level}{A : Type ℓ} → List A ≡ Σ ℕ (Vec A)
 List≡Vec' = isoToPath (iso List→Vec Vec→List Vec→List→Vec List→Vec→List)
 
-----------------------------
-
--- Zip
-
--- The standard library defines zip using zipWith, so we hide them and redefine them here.
-zip : {ℓ : Level}{A B : Type ℓ} → List A → List B → List (A × B)
-zip []       _        = []
-zip (_ ∷ _)  []       = []
-zip (x ∷ xs) (y ∷ ys) = (x , y) ∷ zip xs ys
-
-zipWith : {ℓ : Level}{A B C : Type ℓ} → (A → B → C) → List A → List B → List C
-zipWith f []       _        = []
-zipWith f (_ ∷ _)  []       = []
-zipWith f (x ∷ xs) (y ∷ ys) = f x y ∷ zipWith f xs ys
-
-zipWithPair≡zip : {ℓ : Level}{A B : Type ℓ} → (la : List A)(lb : List B) → zipWith (_,_) la lb ≡ zip la lb
-zipWithPair≡zip []       _        = refl
-zipWithPair≡zip (_ ∷ _)  []       = refl
-zipWithPair≡zip (x ∷ xs) (y ∷ ys) = cong ((x , y) ∷_) (zipWithPair≡zip xs ys)
-
--- Lift to packed vector
-zipV : {ℓ : Level}{A B : Type ℓ} → Σ ℕ (Vec A) → Σ ℕ (Vec B) → Σ ℕ (Vec (A × B))
-zipV {ℓ} {A} {B} = transport (λ i → List≡Vec {A = A} i → List≡Vec {A = B} i → List≡Vec {A = (A × B)} i) zip
-
--- Test using concrete data
-l1 l2 : List ℕ
-l1 = 1 ∷ 2 ∷ 3 ∷ []
-l2 = 4 ∷ 5 ∷ []
-
-l3 : List (ℕ × ℕ)
-l3 = zip l1 l2
-
-v1 v2 : Σ ℕ (Vec ℕ)
-v1 = (3 , 1 ∷ 2 ∷ 3 ∷ [])
-v2 = (2 , 4 ∷ 5 ∷ [])
-
-v3 : Σ ℕ (Vec (ℕ × ℕ))
-v3 = zipV v1 v2
-
--- Transport is not implemented yet for indexed inductive types,
--- so the following gets stuck when you try to normalize it.
--- Normal form: transp (λ i → Σ ℕ (Vec ℕ)) i0 (3 , 1 ∷ 2 ∷ 3 ∷ [])
-
-v1' : Σ ℕ (Vec ℕ)
-v1' = transport List≡Vec l1
-
-----------------------------
-
--- Derivation of Vector Zip
-
-zipMin : {ℓ : Level}{A B : Type ℓ} → (a : List A) → (b : List B) → length (zip a b) ≡ min (length a) (length b)
-zipMin []       _        = refl
-zipMin (_ ∷ _)  []       = refl
-zipMin (x ∷ xs) (y ∷ ys) = cong suc (zipMin xs ys)
-
-zipEq : {ℓ : Level}{A B : Type ℓ} → (a : List A) → (b : List B) → length a ≡ length b → length (zip a b) ≡ length a
-zipEq  a b e = zipMin a b □ minEq (length a) (length b) e
-
-zipV1 : {ℓ : Level}{A B : Type ℓ}{m n : ℕ} → (a : Vec A m) → (b : Vec B n) → m ≡ n → Vec (A × B) m
-zipV1             []       _  _       = []
-zipV1 {_} {A} {B} (_ ∷ _)  [] e       = subst (Vec (A × B)) (sym e) []
-zipV1             (a ∷ as) (b ∷ bs) e = (a , b) ∷ zipV1 as bs (suc-injective e)
-
---zipV1 : {ℓ : Level}{A B : Type ℓ}{m n : ℕ} → (a : Vec A m) → (b : Vec B n) → m ≡ length b → length (zip a b) ≡ length a
-
 -----------
 
-
-
+-- General theorem that an isomorphism between a type and a dependent pair
+-- gives rise to an isomorphism between the second element of the pair
+-- and the the original type paired with the appropriate index.
 aaa : {ι ℓ ℓ′ : Level}{J : Type ι}(A : Type ℓ)(B : J → Type ℓ′) →
       (e : Iso A (Σ J B)) →
       {j : J} → Iso (B j) (Σ A (λ a → (fst ∘ Iso.fun e) a ≡ j))
 aaa A B (iso fun inv rightInv leftInv) {j}
   = iso
-      (λ b → inv (j , b) , subst (λ x → fst x ≡ j) (sym (rightInv (j , b))) refl)
+      (λ b → inv (j , b) , cong fst (rightInv (j , b)))
       (λ ae → subst B (snd ae) ((snd ∘ fun ∘ fst) ae))
       sec
       ret
   where
-    sec : (ae : Σ A (λ a → fst (fun a) ≡ j)) → 
-          (inv (j , subst B (snd ae) (snd (fun (fst ae)))) ,
-           subst (λ x → fst x ≡ j) (sym (rightInv (j , subst B (snd ae) (snd (fun (fst ae)))))) refl) ≡ ae
-    sec (a , e) = {!!}
-    ret : retract (λ b → inv (j , b) , subst (λ x → fst x ≡ j) (sym (rightInv (j , b))) refl)
-                  (λ ae → subst B (snd ae) ((snd ∘ fun ∘ fst) ae))
---    ret : (b : B i) → subst B (snd (inv (i , b) , subst (λ x → fst x ≡ i) (sym (rightInv (i , b))) refl))
---                      ((snd ∘ fun ∘ fst) (inv (i , b) , subst (λ x → fst x ≡ i) (sym (rightInv (i , b))) refl)) ≡ b
-    ret = {!!}
+    sec : (b : Σ A (λ a → fst (fun a) ≡ j)) →
+          (inv (j , transport (λ i → B (snd b i)) (snd (fun (fst b)))) , (λ i → fst (rightInv (j , transport (λ i → B (snd b i)) (snd (fun (fst b)))) i))) ≡ b
+    sec = {!!}
+    ret : (b : B j) → transport (λ i → B (fst (rightInv (j , b) i))) (snd (fun (inv (j , b)))) ≡ b
+    ret b = {!let x = subst (transport (λ i → B (fst (rightInv (j , b) i))) (snd (fun (inv (j , b)))) ≡ b)!}
 
+-- Specialization of aaa to List and Vec.
 bbb : {ℓ : Level}{A : Type ℓ} →
       (e : Iso (List A) (Σ ℕ (Vec A))) → {n : ℕ} → Iso (Vec A n) (Σ (List A) (λ xs → (fst ∘ Iso.fun e) xs ≡ n))
 bbb {A = A} = aaa (List A) (Vec A)
 
+-- Apply bbb to the first isomorphism to get the second one.
 ccc : {ℓ : Level}{A : Type ℓ}{n : ℕ} → Iso (Vec A n) (Σ (List A) (λ xs → (fst ∘ List→Vec) xs ≡ n))
 ccc = bbb isoListVec
 
+-- For all lists, the index of the corresponding vector is the length of the list.
 len= : {ℓ : Level}{A : Type ℓ} → (xs : List A) → (fst ∘ List→Vec) xs ≡ length xs
 len= []       = refl
 len= (x ∷ xs) = cong suc (len= xs)
 
+-- Expressing len= as an equivalence of functions.
 len≡ : {ℓ : Level}{A : Type ℓ} → fst ∘ List→Vec {ℓ} {A} ≡ length
 len≡ = funExt len=
 
--- Could possibly prove this without funExt
+-- Rewrite ccc using length.
+-- Could possibly prove this without funExt, but it's very simple with funExt.
 ddd : {ℓ : Level}{A : Type ℓ}{n : ℕ} → Iso (Vec A n) (Σ (List A) (λ xs → length xs ≡ n))
 ddd {ℓ} {A} {n} = subst (λ (f : List A → ℕ) → Iso (Vec A n) (Σ (List A) (λ xs → f xs ≡ n))) len≡ ccc
 
--- Type is identical to Vec≡List in ListVec2.agda
+-- Equivalence of a vector with a list paired with a proof that its length is the vector index.
+-- Note that the type is identical to Vec≡List in ListVec2.agda
 Vec≡List' : {ℓ : Level}{A : Type ℓ}{n : ℕ} → Vec A n ≡ Σ (List A) (λ xs → length xs ≡ n)
 Vec≡List' = isoToPath ddd
