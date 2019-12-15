@@ -12,14 +12,24 @@ open import Cubical.Foundations.Isomorphism using (iso; Iso; isoToPath; section;
 
 open import Data.Bool.Base using (Bool; true; false; _∧_)
 open import Data.Nat.Base using (ℕ; zero; suc)
-open import Data.Product using (_×_)
+open import Data.Product using (_×_; proj₁; proj₂)
 
 open import Lemmas
 
 Input Output : Set
 
 Input  = Bool × (ℕ × Bool)
+
+firstB : Input → Bool
+firstB = proj₁
+
+secondB : Input → Bool
+secondB = proj₂ ∘ proj₂
+
 Output = ℕ × Bool
+
+andB : Output → Bool
+andB = proj₂
 
 record Input' : Set where
   constructor input'
@@ -27,12 +37,14 @@ record Input' : Set where
     firstBool  : Bool
     numberI    : ℕ
     secondBool : Bool
+open Input'
 
 record Output' : Set where
   constructor output'
   field
     numberO  : ℕ
     andBools : Bool
+open Output'
 
 --------------
 
@@ -73,6 +85,7 @@ Output≡Output' : Output ≡ Output'
 Output≡Output' = isoToPath isoOutput
 
 --------------
+
 
 op : Input → Output
 op (b , (n , b')) = n , b ∧ b'
@@ -121,3 +134,22 @@ isoInput2 = iso Input→Input2 Input2→Input Input2→Input→Input2 Input→In
 
 Input≡Input2 : Input ≡ Input2
 Input≡Input2 = isoToPath isoInput2
+
+--------------
+
+-- Proofs
+
+andSpecTrueTrue : (r : Input) → (F : firstB r ≡ true) → (S : secondB r ≡ true) → andB (op r) ≡ true
+andSpecTrueTrue r F S = subst (λ x → x ∧ secondB r ≡ true) (sym F) (subst (λ x → x ≡ true) (sym S) refl)
+
+andSpecTrueTrue' : (r : Input') → (F : firstBool r ≡ true) → (S : secondBool r ≡ true) → andBools (op' r) ≡ true
+andSpecTrueTrue' r F S = subst (λ x → x ∧ secondBool r ≡ true) (sym F) (subst (λ x → x ≡ true) (sym S) refl)
+
+-- Lift the first proof
+andSpecTrueTrueLift : (r' : Input') → (F' : firstBool r' ≡ true) → (S' : secondBool r' ≡ true) → andBools (op' r') ≡ true
+andSpecTrueTrueLift r' F' S' =
+  let r : Input              ; r = transport (sym Input≡Input') r'
+      F : firstB r ≡ true    ; F = F'
+      S : secondB r ≡ true   ; S = S'
+      B : andB (op r) ≡ true ; B = andSpecTrueTrue r F S
+  in B
