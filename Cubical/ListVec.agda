@@ -4,11 +4,11 @@ module ListVec where
 
 open import Cubical.Core.Everything using (_≡_; Level; Type; Σ; _,_; fst; snd; _≃_; ~_)
 
-open import Cubical.Foundations.Prelude using (refl; sym; _□_; cong; transport; subst; funExt; transp; I; i0; i1)
-open import Cubical.Foundations.Equiv using (isoToEquiv)
+open import Cubical.Foundations.Prelude using (refl; sym; _∙_; cong; transport; subst; funExt; transp; I; i0; i1)
+--open import Cubical.Foundations.Equiv using (isoToEquiv)
 open import Cubical.Foundations.Function using (_∘_)
 open import Cubical.Foundations.Univalence using (ua)
-open import Cubical.Foundations.Isomorphism using (iso; Iso; isoToPath; section; retract)
+open import Cubical.Foundations.Isomorphism using (iso; Iso; isoToPath; section; retract; isoToEquiv)
 
 open import Data.List using (List; length; []; _∷_)
 open import Data.Nat.Base using (ℕ; zero; suc)
