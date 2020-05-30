@@ -4,17 +4,17 @@ module Natty where
 
 open import Data.Nat using (ℕ; zero; suc)
 
-open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong)
+open import Relation.Binary.PropositionalEquality using (_≡_; refl; sym; trans; cong; subst)
 
 data Bin : Set where
   b0 : Bin         -- 0
-  s1 : Bin → Bin   -- 2*n + 1
-  s2 : Bin → Bin   -- 2*{n+1}
+  s1 : Bin → Bin   -- 2b+1
+  s2 : Bin → Bin   -- 2b+2 (= 2(b+1))
 
 bsuc : Bin → Bin
 bsuc b0     = s1 b0
-bsuc (s1 n) = s2 n
-bsuc (s2 n) = s1 (bsuc n)
+bsuc (s1 b) = s2 b
+bsuc (s2 b) = s1 (bsuc b)
 
 data Natty : Bin → Set where
   n0   : Natty b0
@@ -24,14 +24,20 @@ s1Natty : (b : Bin) → Natty b → Natty (s1 b)
 s1Natty .b0       n0         = nsuc b0 n0
 s1Natty .(bsuc b) (nsuc b n) = nsuc (s2 b) (nsuc (s1 b) (s1Natty b n))
 
+{-
 s2Natty : (b : Bin) → Natty b → Natty (s2 b)
-s2Natty .b0       n0         = nsuc (s1 b0) (nsuc b0 n0)
-s2Natty .(bsuc b) (nsuc b n) = nsuc (s1 (bsuc b)) (nsuc (s2 b) (s2Natty b n))
+s2Natty .b0               n0 = nsuc (s1 b0)       (s1Natty b0 n0)
+s2Natty .(bsuc b) (nsuc b n) = nsuc (s1 (bsuc b)) (s1Natty (bsuc b) (nsuc b n))
+
+s2Natty' : (b : Bin) → Natty b → Natty (s2 b)
+s2Natty' .b0       n0         = nsuc (s1 b0)       (nsuc b0 n0)
+s2Natty' .(bsuc b) (nsuc b n) = nsuc (s1 (bsuc b)) (nsuc (s2 b) (s2Natty' b n))
+-}
 
 natty : (b : Bin) → Natty b
 natty b0     = n0
-natty (s1 b) = s1Natty b (natty b)
-natty (s2 b) = s2Natty b (natty b)
+natty (s1 b) =              s1Natty b (natty b)
+natty (s2 b) = nsuc (s1 b) (s1Natty b (natty b))
 
 natPeano : (P : ℕ → Set) → P zero → ((n : ℕ) → P n → P (suc n)) → (n : ℕ) → P n
 natPeano P p0 psuc zero    = p0
@@ -46,9 +52,19 @@ natPeanoIdSuc n = refl
 natPeanoIdId : (n : ℕ) → natPeanoId n ≡ n
 natPeanoIdId = natPeano (λ n → natPeanoId n ≡ n) refl (λ n ih → trans (natPeanoIdSuc n) (cong suc ih))
 
--- Since (natPeanoIdSuc n) is just refl, the proof collapses as follows.
+-- Since (natPeanoIdSuc' n) is just refl, the proof collapses as follows.
 natPeanoIdId' : (n : ℕ) → natPeanoId n ≡ n
 natPeanoIdId' = natPeano (λ n → natPeanoId n ≡ n) refl (λ n ih → cong suc ih)
+
+----------
+-- Alternative direct proof using subst
+natPeanoIdId'' : (n : ℕ) → natPeanoId n ≡ n
+natPeanoIdId'' = natPeano (λ n → natPeanoId n ≡ n) refl (λ n ih → subst (λ x → suc x ≡ suc n) (sym ih) refl)
+
+-- Even though this proof is just refl (see natPeanoIdSuc) we can also prove it using natPeanoIdId'' and 2 rewrites
+natPeanoIdSuc' : (n : ℕ) → natPeanoId (suc n) ≡ suc (natPeanoId n)
+natPeanoIdSuc' n rewrite natPeanoIdId'' n = refl
+--------
 
 nattyPeano : (P : Bin → Set) → P b0 → ((b : Bin) → P b → P (bsuc b)) → (b : Bin) → Natty b → P b
 nattyPeano P p0 psuc .b0       n0         = p0
@@ -60,9 +76,28 @@ binPeano P p0 psuc b = nattyPeano P p0 psuc b (natty b)
 binPeanoId : Bin → Bin
 binPeanoId = binPeano (λ _ → Bin) b0 (λ _ b → bsuc b)
 
+binNattySuc : (b : Bin) → Natty b → natty (bsuc b) ≡ nsuc b (natty b)
+binNattySuc .b0            n0              = refl
+binNattySuc .(bsuc b0)     (nsuc b0 n)     = refl
+binNattySuc .(bsuc (s1 b)) (nsuc (s1 b) n) =
+  subst (λ x → s1Natty (bsuc b) x ≡ nsuc (s2 b) (nsuc (s1 b) (s1Natty b (natty b))))
+        (sym (binNattySuc b (natty b))) refl
+binNattySuc .(bsuc (s2 b)) (nsuc (s2 b) n) = refl
+
+binPeanoSuc : (P : Bin → Set) → (p0 : P b0) → (psuc : (b : Bin) → P b → P (bsuc b)) → (b : Bin) →
+  binPeano P p0 psuc (bsuc b) ≡ psuc b (binPeano P p0 psuc b)
+binPeanoSuc P p0 psuc b rewrite binNattySuc b (natty b) = refl  
+
 binPeanoIdSuc : (b : Bin) → binPeanoId (bsuc b) ≡ bsuc (binPeanoId b)
-binPeanoIdSuc b = {!!}
+binPeanoIdSuc b rewrite binNattySuc b (natty b) = refl
 
 -- Follows exactly the uncollapsed natPeanoIdId.
 binPeanoIdId : (b : Bin) → binPeanoId b ≡ b
 binPeanoIdId = binPeano (λ b → binPeanoId b ≡ b) refl (λ b ih → trans (binPeanoIdSuc b) (cong bsuc ih))
+
+-- We can also follow the direct proof of natPeanoIdId''
+-- Howeve we need to rewrite the goal of subst using another subst which my brain can't quite handle now.
+{-
+binPeanoIdId' : (b : Bin) → binPeanoId b ≡ b
+binPeanoIdId' b = {!!}
+-}
