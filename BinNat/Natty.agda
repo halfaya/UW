@@ -24,16 +24,6 @@ s1Natty : (b : Bin) → Natty b → Natty (s1 b)
 s1Natty .b0       n0         = nsuc b0 n0
 s1Natty .(bsuc b) (nsuc b n) = nsuc (s2 b) (nsuc (s1 b) (s1Natty b n))
 
-{-
-s2Natty : (b : Bin) → Natty b → Natty (s2 b)
-s2Natty .b0               n0 = nsuc (s1 b0)       (s1Natty b0 n0)
-s2Natty .(bsuc b) (nsuc b n) = nsuc (s1 (bsuc b)) (s1Natty (bsuc b) (nsuc b n))
-
-s2Natty' : (b : Bin) → Natty b → Natty (s2 b)
-s2Natty' .b0       n0         = nsuc (s1 b0)       (nsuc b0 n0)
-s2Natty' .(bsuc b) (nsuc b n) = nsuc (s1 (bsuc b)) (nsuc (s2 b) (s2Natty' b n))
--}
-
 natty : (b : Bin) → Natty b
 natty b0     = n0
 natty (s1 b) =              s1Natty b (natty b)
@@ -77,12 +67,10 @@ binPeanoId : Bin → Bin
 binPeanoId = binPeano (λ _ → Bin) b0 (λ _ b → bsuc b)
 
 binNattySuc : (b : Bin) → Natty b → natty (bsuc b) ≡ nsuc b (natty b)
-binNattySuc .b0            n0              = refl
-binNattySuc .(bsuc b0)     (nsuc b0 n)     = refl
-binNattySuc .(bsuc (s1 b)) (nsuc (s1 b) n) =
-  subst (λ x → s1Natty (bsuc b) x ≡ nsuc (s2 b) (nsuc (s1 b) (s1Natty b (natty b))))
-        (sym (binNattySuc b (natty b))) refl
-binNattySuc .(bsuc (s2 b)) (nsuc (s2 b) n) = refl
+binNattySuc .b0            n0                                              = refl
+binNattySuc .(bsuc b0)     (nsuc b0 n)                                     = refl
+binNattySuc .(bsuc (s1 b)) (nsuc (s1 b) n) rewrite binNattySuc b (natty b) = refl
+binNattySuc .(bsuc (s2 b)) (nsuc (s2 b) n)                                 = refl
 
 binPeanoSuc : (P : Bin → Set) → (p0 : P b0) → (psuc : (b : Bin) → P b → P (bsuc b)) → (b : Bin) →
   binPeano P p0 psuc (bsuc b) ≡ psuc b (binPeano P p0 psuc b)
