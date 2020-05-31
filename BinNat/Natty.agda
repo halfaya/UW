@@ -66,25 +66,32 @@ binPeano P p0 psuc b = nattyPeano P p0 psuc b (natty b)
 binPeanoId : Bin → Bin
 binPeanoId = binPeano (λ _ → Bin) b0 (λ _ b → bsuc b)
 
-binNattySuc : (b : Bin) → Natty b → natty (bsuc b) ≡ nsuc b (natty b)
-binNattySuc .b0            n0                                              = refl
-binNattySuc .(bsuc b0)     (nsuc b0 n)                                     = refl
-binNattySuc .(bsuc (s1 b)) (nsuc (s1 b) n) rewrite binNattySuc b (natty b) = refl
-binNattySuc .(bsuc (s2 b)) (nsuc (s2 b) n)                                 = refl
+-- original version
+binNattySuc' : (b : Bin) → Natty b → natty (bsuc b) ≡ nsuc b (natty b)
+binNattySuc' .b0            n0                                               = refl
+binNattySuc' .(bsuc b0)     (nsuc b0 n)                                      = refl
+binNattySuc' .(bsuc (s1 b)) (nsuc (s1 b) n) rewrite binNattySuc' b (natty b) = refl
+binNattySuc' .(bsuc (s2 b)) (nsuc (s2 b) n)                                  = refl
+
+-- simplified version
+binNattySuc : (b : Bin) → natty (bsuc b) ≡ nsuc b (natty b)
+binNattySuc b0     = refl
+binNattySuc (s1 b) rewrite binNattySuc b = refl
+binNattySuc (s2 b) rewrite binNattySuc b = refl
 
 binPeanoSuc : (P : Bin → Set) → (p0 : P b0) → (psuc : (b : Bin) → P b → P (bsuc b)) → (b : Bin) →
   binPeano P p0 psuc (bsuc b) ≡ psuc b (binPeano P p0 psuc b)
-binPeanoSuc P p0 psuc b rewrite binNattySuc b (natty b) = refl  
+binPeanoSuc P p0 psuc b rewrite binNattySuc b = refl  
 
 binPeanoIdSuc : (b : Bin) → binPeanoId (bsuc b) ≡ bsuc (binPeanoId b)
-binPeanoIdSuc b rewrite binNattySuc b (natty b) = refl
+binPeanoIdSuc b rewrite binNattySuc b = refl
 
 -- Follows exactly the uncollapsed natPeanoIdId.
 binPeanoIdId : (b : Bin) → binPeanoId b ≡ b
 binPeanoIdId = binPeano (λ b → binPeanoId b ≡ b) refl (λ b ih → trans (binPeanoIdSuc b) (cong bsuc ih))
 
 -- We can also follow the direct proof of natPeanoIdId''
--- Howeve we need to rewrite the goal of subst using another subst which my brain can't quite handle now.
+-- However we need to rewrite the goal of subst using another subst which my brain can't quite handle now.
 {-
 binPeanoIdId' : (b : Bin) → binPeanoId b ≡ b
 binPeanoIdId' b = {!!}
