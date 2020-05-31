@@ -75,7 +75,7 @@ binNattySuc' .(bsuc (s2 b)) (nsuc (s2 b) n)                                  = r
 
 -- simplified version
 binNattySuc : (b : Bin) → natty (bsuc b) ≡ nsuc b (natty b)
-binNattySuc b0     = refl
+binNattySuc b0                           = refl
 binNattySuc (s1 b) rewrite binNattySuc b = refl
 binNattySuc (s2 b) rewrite binNattySuc b = refl
 
