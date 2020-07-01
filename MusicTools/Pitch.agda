@@ -12,7 +12,7 @@ open import Cubical.Foundations.Isomorphism using (iso; Iso; isoToPath; section;
 open import Data.List       using (List; length; []; _∷_)
 open import Data.Fin        using (Fin; toℕ; #_; _≟_) renaming (zero to fz; suc to fs)
 open import Data.Nat        using (ℕ; zero; suc; _+_; _*_)
-open import Data.Nat.DivMod using (_mod_; _div_)
+open import Data.Nat.DivMod using (_mod_; _div_; DivMod; _divMod_)
 open import Data.Product    using (_×_; _,_; proj₁)
 open import Data.Unit       using (⊤; tt)
 open import Data.Vec        using (Vec; []; _∷_)
@@ -54,7 +54,7 @@ rel→abs→rel (pitchClass p , octave o) = {!!}
 
 abs→rel→abs : (p : Pitch) → (rel→abs ∘ abs→rel) p ≡ p
 abs→rel→abs (pitch p) =
-  let a = {!!}
+  let a = DivMod.property (p divMod chromaticScaleSize)
   in cong pitch {!!}
 
 -- p / 12 * 12 + p % 12 = p

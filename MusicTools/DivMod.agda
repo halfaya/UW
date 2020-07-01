@@ -2,19 +2,16 @@
 
 module DivMod where
 
-open import Cubical.Core.Everything using (_≡_; Level; Type; Σ; _,_; fst; snd; _≃_; ~_)
+open import Cubical.Core.Everything using (_≡_; Level; Type; Type₀; Σ; _,_; fst; snd; _≃_; ~_)
 
 open import Cubical.Foundations.Prelude     using (refl; sym; _∙_; cong; transport; subst; funExt; transp; I; i0; i1)
 open import Cubical.Foundations.Function    using (_∘_)
-open import Cubical.Foundations.Univalence  using (ua)
 open import Cubical.Foundations.Isomorphism using (iso; Iso; isoToPath; section; retract; isoToEquiv)
 
-open import Data.Fin        using (Fin; toℕ; #_; _≟_) renaming (zero to fz; suc to fs)
-open import Data.Nat        using (ℕ; zero; suc; _+_; _*_; _≤_ ; _>_; _<_; _≥_;  _<?_; z≤n; s≤s)
+open import Data.Fin        using (Fin; toℕ; fromℕ<; #_; _≟_) renaming (zero to fz; suc to fs)
+open import Data.Nat        using (ℕ; zero; suc; _+_; _*_; _≤_ ; _>_; _<_; _≥_; z≤n; s≤s)
 open import Data.Product    using (_×_)
 open import Data.Sum        using (_⊎_; inj₁; inj₂)
-
-open import Relation.Nullary using (yes; no)
 
 +-assoc : (m n o : ℕ) → (m + n) + o ≡ m + (n + o)
 +-assoc zero    _ _ = refl
@@ -57,7 +54,7 @@ sucn-1 : (n : ℕ) → suc n - 1 ⟨ s≤s z≤n ⟩ ≡ n
 sucn-1 n = refl
 
 -decreasing : (n m : ℕ) → (m≤n : suc m ≤ n) → (n - suc m ⟨ m≤n ⟩) < n
--decreasing (suc n) zero    (s≤s z≤n) = ≤-refl {suc n}
+-decreasing (suc n) zero    (s≤s z≤n) = ≤-refl
 -decreasing (suc n) (suc m) (s≤s m≤n) = ≤-trans (-decreasing n m m≤n) (n≤1+n n)
 
 -decreasing1 : (c n m : ℕ) → (m≤n : suc m ≤ n) → (n ≤ suc c) → (n - suc m ⟨ m≤n ⟩) ≤ c
@@ -73,17 +70,48 @@ lemma2 n m a {m≤n} x = subst (λ y → y ≡ m + a) (lemma1 n m {m≤n} ) (con
 lemma3 : (n m d r : ℕ) → {m≤n : m ≤ n} → n - m ⟨ m≤n ⟩ ≡ d * m + r → n ≡ (suc d) * m + r
 lemma3 n m d r {m≤n} x = lemma2 n m (d * m + r) x ∙ sym (+-assoc m (d * m) r)
 
-divmod1 : (c n m : ℕ) → (n ≤ c) → {m > 0} → Σ (ℕ × ℕ) (λ (d , r) → (r < m) × (n ≡ d * m + r))
-divmod1 zero zero (suc m) z≤n = (0 , 0) , s≤s z≤n , refl
+infixl 7 _div_ _mod_ _divMod_
+
+record DivMod (n m : ℕ) : Type₀ where
+  constructor divMod
+  field
+    q       : ℕ
+    r       : ℕ
+    r<m     : r < m
+    n=q*m+r : n ≡ q * m + r
+
+record DivModFin (dividend divisor : ℕ) : Type₀ where
+  constructor divModFin
+  field
+    quotient  : ℕ
+    remainder : Fin divisor
+    property  : dividend ≡ toℕ remainder + quotient * divisor
+
+divmod1 : (c n m : ℕ) → (n ≤ c) → {m > 0} → DivMod n m
+divmod1 zero zero (suc m) z≤n = divMod 0 0 (s≤s z≤n) refl
 divmod1 (suc c) n (suc m) n≤c with <-∨-≥ n (suc m)
-... | inj₁ n<m = (0 , n) , n<m , refl
+... | inj₁ n<m = divMod 0 n n<m refl
 ... | inj₂ n≥m =
-  let ((d' , r') , (r'<m , n-m≡d'*m+r)) = divmod1 c (n - (suc m) ⟨ n≥m ⟩) (suc m) (-decreasing1 c n m n≥m n≤c ) {s≤s z≤n}
-  in (suc d' , r') , r'<m , lemma3 n (suc m) d' r' n-m≡d'*m+r
+  let (divMod q r r<m n-m≡q*m+r) = divmod1 c (n - (suc m) ⟨ n≥m ⟩) (suc m) (-decreasing1 c n m n≥m n≤c ) {s≤s z≤n}
+  in divMod (suc q) r r<m (lemma3 n (suc m) q r n-m≡q*m+r)
 
-divmod : (n m : ℕ) → {m > 0} → Σ (ℕ × ℕ) (λ (d , r) → (r < m) × (n ≡ d * m + r))
-divmod n m {m>0} = divmod1 n n m (≤-refl {n}) {m>0} 
+divmod : (n m : ℕ) → {m > 0} → DivMod n m
+divmod n (suc m) = divmod1 n n (suc m) ≤-refl {s≤s z≤n}
 
-aaa = divmod 73 12 {s≤s z≤n}
+_div_ : (n m : ℕ) → {m > 0} → ℕ
+n div (suc m) = DivMod.q (divmod n (suc m) {s≤s z≤n})
+
+_mod_ : (n m : ℕ) → {m > 0} → ℕ
+n mod (suc m) = DivMod.r (divmod n (suc m) {s≤s z≤n})
+
+x1 : (n m : ℕ) {m>0 : m > 0} → _mod_ n m {m>0} < m
+x1 n (suc m) = DivMod.r<m (divmod n (suc m) {s≤s z≤n})
+
+x2 : (n m : ℕ) {m>0 : m > 0} → n ≡ (_div_ n m {m>0}) * m + (_mod_ n m {m>0})
+x2 n (suc m) = DivMod.n=q*m+r (divmod n (suc m) {s≤s z≤n})
+
+aa = divmod 73 12
+bb = 73 div 12
+cc = 73 mod 12
 
 
