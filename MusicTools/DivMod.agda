@@ -13,6 +13,23 @@ open import Data.Nat        using (ℕ; zero; suc; _+_; _*_; _≤_ ; _>_; _<_; _
 open import Data.Product    using (_×_)
 open import Data.Sum        using (_⊎_; inj₁; inj₂)
 
+open import Fin
+
+-- From Data.Fin.Properites
+fromℕ<-toℕ : ∀ {m} (i : Fin m) (i<m : toℕ i < m) → fromℕ< i<m ≡ i
+fromℕ<-toℕ fz     (s≤s z≤n)       = refl
+fromℕ<-toℕ (fs i) (s≤s (s≤s m≤n)) = cong fs (fromℕ<-toℕ i (s≤s m≤n))
+
+toℕ-fromℕ< : ∀ {m n} (m<n : m < n) → toℕ (fromℕ< m<n) ≡ m
+toℕ-fromℕ< (s≤s z≤n)       = refl
+toℕ-fromℕ< (s≤s (s≤s m<n)) = cong suc (toℕ-fromℕ< (s≤s m<n))
+
+toℕ<n : ∀ {n} (i : Fin n) → toℕ i < n
+toℕ<n fz     = s≤s z≤n
+toℕ<n (fs i) = s≤s (toℕ<n i)
+
+-------------------
+
 +-assoc : (m n o : ℕ) → (m + n) + o ≡ m + (n + o)
 +-assoc zero    _ _ = refl
 +-assoc (suc m) n o = cong suc (+-assoc m n o)
@@ -80,12 +97,12 @@ record DivMod (n m : ℕ) : Type₀ where
     r<m     : r < m
     n=q*m+r : n ≡ q * m + r
 
-record DivModFin (dividend divisor : ℕ) : Type₀ where
+record DivModFin (n m : ℕ) : Type₀ where
   constructor divModFin
   field
-    quotient  : ℕ
-    remainder : Fin divisor
-    property  : dividend ≡ toℕ remainder + quotient * divisor
+    q       : ℕ
+    r       : Fin m
+    n=q*m+r : n ≡ q * m + toℕ r
 
 divmod1 : (c n m : ℕ) → (n ≤ c) → {m > 0} → DivMod n m
 divmod1 zero zero (suc m) z≤n = divMod 0 0 (s≤s z≤n) refl
@@ -103,6 +120,29 @@ n div (suc m) = DivMod.q (divmod n (suc m) {s≤s z≤n})
 
 _mod_ : (n m : ℕ) → {m > 0} → ℕ
 n mod (suc m) = DivMod.r (divmod n (suc m) {s≤s z≤n})
+
+---------
+
+dm→dmf : {m n : ℕ} → DivMod n m → DivModFin n m
+dm→dmf {m} {n} (divMod q r r<m n=q*m+r) =
+  divModFin q (1→fin (fin1 r r<m)) (subst (λ x → n ≡ q * m + x) (sym (toℕ-fromℕ< r<m)) n=q*m+r)
+
+dmf→dm : {m n : ℕ} → DivModFin n m → DivMod n m
+dmf→dm (divModFin q r n=q*m+r) = divMod q (toℕ r) (toℕ<n r) n=q*m+r
+
+dm→dmf→dm : {m n : ℕ} → (dm : DivMod n m) → (dmf→dm ∘ dm→dmf) dm ≡ dm
+dm→dmf→dm (divMod q r r<m n=q*m+r) i = divMod q (toℕ-fromℕ< r<m i) {!!} {!!}
+
+dmf→dm→dmf : {m n : ℕ} → (dmf : DivModFin n m) → (dm→dmf ∘ dmf→dm) dmf ≡ dmf
+dmf→dm→dmf (divModFin q r n=q*m+r) i = divModFin q (fromℕ<-toℕ r (toℕ<n r) i) {!!}
+
+dm≃dmf : {n m : ℕ} → Iso (DivMod n m) (DivModFin n m)
+dm≃dmf = iso dm→dmf dmf→dm dmf→dm→dmf dm→dmf→dm
+
+dm≡dmf : {n m : ℕ} → DivMod n m ≡ DivModFin n m
+dm≡dmf = isoToPath dm≃dmf
+
+---------
 
 x1 : (n m : ℕ) {m>0 : m > 0} → _mod_ n m {m>0} < m
 x1 n (suc m) = DivMod.r<m (divmod n (suc m) {s≤s z≤n})
