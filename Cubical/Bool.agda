@@ -22,8 +22,12 @@ notnot : (b : Bool) → not (not b) ≡ b
 notnot true  = refl
 notnot false = refl
 
-x : Bool ≡ Bool
-x = isoToPath (iso not not notnot notnot)
+e : Bool ≡ Bool
+e = isoToPath (iso not not notnot notnot)
+
+a = transp (λ i → e i) i0 true
+b = transp (λ _ → Bool) i1 true
+--c = transp (λ i → e i) i1 true
 
 {-
 λ i →
