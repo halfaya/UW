@@ -59,9 +59,9 @@ dconA0 = zero
 dconA1 : ℕ → ℕ
 dconA1 = suc
 
-delimA : {A : Type} (P : ℕ → Type) (p0 : P dconA0) (pS : (n : ℕ) → P n → P (dconA1 n)) (n : ℕ) → P n
-delimA     P p0 pS zero    = p0 
-delimA {A} P p0 pS (suc n) = pS n (delimA {A} P p0 pS n)  -- For some reason Agda needs A in this case.
+delimA : (P : ℕ → Type) (p0 : P dconA0) (pS : (n : ℕ) → P n → P (dconA1 n)) (n : ℕ) → P n
+delimA P p0 pS zero    = p0 
+delimA P p0 pS (suc n) = pS n (delimA P p0 pS n)
 
 -- For the second we use the fixed bijection f.
 
@@ -89,9 +89,9 @@ sucComm (suc (suc k)) n =
   subst (λ x → f (suc x) ≡ f (suc (suc (iter k suc n)))) (sym (gf (suc (iter k suc n)))) refl
 
 -- Result of iterating pS k times on p0.
-iterS : {A : Type} (P : ℕ → Type) (p0 : P dconB0) (pS : (n : ℕ) → P n → P (dconB1 n)) (n : ℕ) (k : ℕ) → P (iter k dconB1 dconB0)
-iterS     P p0 pS n zero    = p0
-iterS {A} P p0 pS n (suc k) = pS (iter k dconB1 (suc zero)) (iterS {A} P p0 pS n k)
+iterS : (P : ℕ → Type) (p0 : P dconB0) (pS : (n : ℕ) → P n → P (dconB1 n)) (n : ℕ) (k : ℕ) → P (iter k dconB1 dconB0)
+iterS P p0 pS n zero    = p0
+iterS P p0 pS n (suc k) = pS (iter k dconB1 (suc zero)) (iterS P p0 pS n k)
 
 iterSuc : (k : ℕ) → iter k suc zero ≡ k
 iterSuc zero    = refl
@@ -100,15 +100,15 @@ iterSuc (suc k) = cong suc (iterSuc k)
 -- There may be a simpler way to do this, but this is the best I could come up with.
 -- Note that the goal is to only depend on f being an Iso, not the details of the implementaton of f.
 -- Strategy: Given n, consider k = g n. Iterate pS k times on p0. This results in P n.
-delimB : {A : Type} (P : ℕ → Type) (p0 : P dconB0) (pS : (n : ℕ) → P n → P (dconB1 n)) (n : ℕ) → P n
-delimB {A} P p0 pS n =
+delimB : (P : ℕ → Type) (p0 : P dconB0) (pS : (n : ℕ) → P n → P (dconB1 n)) (n : ℕ) → P n
+delimB P p0 pS n =
   let k = g n
 
       a : P (iter k dconB1 dconB0) ≡ P (f (iter k dconA1 (g dconB0)))
       a = cong P (subst (λ x → iter k dconB1 x ≡ f (iter k dconA1 (g dconB0))) (fg dconB0) (sucComm k (g dconB0)))
       
       b : P (iter k dconB1 dconB0) 
-      b = iterS {A} P p0 pS n k
+      b = iterS P p0 pS n k
       
       c : P (f (iter k dconA1 (g dconB0)))
       c = transport a b
