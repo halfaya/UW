@@ -14,6 +14,7 @@ data ℕ : Set where
 
 -- Consider a fixed self-equivalence of ℕ.
 -- Start with a simple one that rotates 0, 1 and 2 (we want to avoid involutions).
+-- You should be able to redefine f (and redo the Iso); everything following should still hold.
 f : ℕ → ℕ
 f zero                = suc zero
 f (suc zero)          = suc (suc zero)
