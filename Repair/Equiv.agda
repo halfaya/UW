@@ -117,3 +117,11 @@ delimB P p0 pS n =
       d = subst (λ x → f x ≡ n) (sym (iterSuc k)) (fg n)
 
   in subst P d c
+
+----
+
+data B : Type where
+  mkB : ℕ → B
+
+elimB : (P : B → Type) → (p : (n : ℕ) → P (mkB n)) → (b : B) → P b
+elimB P p (mkB n) = p n
