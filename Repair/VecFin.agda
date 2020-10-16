@@ -4,9 +4,9 @@ module VecFin where
 
 open import Agda.Primitive renaming (Set to Type)
 
-open import Data.Fin renaming (zero to fz; suc to fs)
-open import Data.Nat
-open import Data.Vec
+open import Data.Fin using (Fin) renaming (zero to fz; suc to fs)
+open import Data.Nat using (ℕ; zero; suc)
+open import Data.Vec using (Vec; []; _∷_)
 
 open import Function using (_∘_)
 
