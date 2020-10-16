@@ -20,13 +20,13 @@ nil ()
 
 cons : {T : Type} {n : ℕ} → T → B T n → B T (suc n)
 cons t b fz     = t
-cons _ b (fs f) = b f
+cons _ b (fs m) = b m
 
 hd : {T : Type} {n : ℕ} → B T (suc n) → T
 hd b = b fz
 
 tl : {T : Type} {n : ℕ} → B T (suc n) → B T n
-tl b f = b (fs f)
+tl b m = b (fs m)
 
 -----------
 
