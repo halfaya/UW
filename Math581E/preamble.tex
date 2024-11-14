@@ -1,0 +1,216 @@
+\pdfminorversion=7
+\begin{filecontents*}[overwrite]{\jobname.xmpdata}
+\Title{title here}
+\Author{}
+\Language{en-US}
+\Subject{abstract}
+\Keywords{key1 \sep key2 \sep key3}
+\end{filecontents*}
+
+
+
+\documentclass[12pt, reqno]{amsart}
+
+\usepackage[utf8]{inputenc}
+\usepackage{colorprofiles}
+\usepackage[a-2b,mathxmp]{pdfx}[2018/12/22]
+\hypersetup{pdfstartview=}
+
+% Color comments!
+\usepackage{xcolor}
+\usepackage{fullpage}
+
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue}
+\usepackage[alphabetic,backrefs,lite]{amsrefs}
+
+\usepackage{amssymb, amsmath, amsthm, amsfonts, mathrsfs, mathtools}
+
+\usepackage{amscd}   % for commutative diagrams
+\usepackage{tikz-cd} % for complicated commutative diagrams
+\usepackage[all,cmtip]{xy}
+
+\usepackage[shortlabels]{enumitem}
+
+
+
+% Note: if you have problems with the Sha in cyrillic font,
+% change the following ``paragraph'' to \newcommand{\Sha}{{\operatorname{Sha}}}
+\DeclareFontEncoding{OT2}{}{} % to enable usage of cyrillic fonts
+\newcommand{\textcyr}[1]{%
+ {\fontencoding{OT2}\fontfamily{wncyr}\fontseries{m}\fontshape{n}\selectfont #1}}
+\newcommand{\Sha}{{\mbox{\textcyr{Sh}}}}
+% note: cmr might work in place of wncyr
+
+
+\newcommand\commentr[1]{{\color{red} \sf [#1]}}
+\newcommand\commentb[1]{{\color{blue} \sf [#1]}}
+\newcommand\commentm[1]{{\color{magenta} \sf [#1]}}
+
+\newcommand{\bvedit}[1]{{\color{magenta}   #1}}
+\newcommand{\bianca}[1]{{\color{magenta} \sf $\clubsuit\clubsuit\clubsuit$ Bianca: [#1]}}
+\newcommand{\margBi}[1]{\normalsize{{\color{red}\footnote{{\color{magenta}#1}}}{\marginpar[{\color{red}\hfill\tiny\thefootnote$\rightarrow$}]{{\color{red}$\leftarrow$\tiny\thefootnote}}}}}
+\newcommand{\Bianca}[1]{\margBi{(Bianca) #1}}
+
+
+
+% Theorems
+
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{theorem}[lemma]{Theorem}
+\newtheorem{propo}[lemma]{Proposition}
+\newtheorem{prop}[lemma]{Proposition}
+\newtheorem{cor}[lemma]{Corollary}
+\newtheorem{conj}[lemma]{Conjecture}
+\newtheorem{claim}[lemma]{Claim}
+\newtheorem{claim*}{Claim}
+\newtheorem{rmk}[lemma]{Remark}
+\newtheorem{remark}[lemma]{Remark}
+\newtheorem{thm}[lemma]{Theorem}
+\newtheorem{defn}[lemma]{Definition}
+\newtheorem{example}[lemma]{Example}
+
+%Characters
+\newcommand{\A}{{\mathbb A}}
+\newcommand{\G}{{\mathbb G}}
+\newcommand{\bbH}{{\mathbb H}}
+\newcommand{\PP}{{\mathbb P}}
+\newcommand{\C}{{\mathbb C}}
+\newcommand{\F}{{\mathbb F}}
+\newcommand{\Q}{{\mathbb Q}}
+\newcommand{\R}{{\mathbb R}}
+\newcommand{\Z}{{\mathbb Z}}
+
+\newcommand{\Xbar}{{\overline{X}}}
+\newcommand{\Qbar}{{\overline{\Q}}}
+\newcommand{\Zhat}{{\hat{\Z}}}
+\newcommand{\Zbar}{{\overline{\Z}}}
+\newcommand{\kbar}{{\overline{k}}}
+\newcommand{\Kbar}{{\overline{K}}}
+\newcommand{\ksep}{{k^{\operatorname{sep}}}}
+\newcommand{\Fbar}{{\overline{\F}}}
+
+\newcommand{\kk}{{\mathbf k}}
+
+\newcommand{\pp}{{\mathfrak p}}
+\newcommand{\qq}{{\mathfrak q}}
+\newcommand{\mm}{{\mathfrak m}}
+
+% mathcal characters
+\newcommand{\calA}{{\mathcal A}}
+\newcommand{\calB}{{\mathcal B}}
+\newcommand{\calC}{{\mathcal C}}
+\newcommand{\calD}{{\mathcal D}}
+\newcommand{\calE}{{\mathcal E}}
+\newcommand{\calF}{{\mathcal F}}
+\newcommand{\calG}{{\mathcal G}}
+\newcommand{\calH}{{\mathcal H}}
+\newcommand{\calI}{{\mathcal I}}
+\newcommand{\calJ}{{\mathcal J}}
+\newcommand{\calK}{{\mathcal K}}
+\newcommand{\calL}{{\mathcal L}}
+\newcommand{\calM}{{\mathcal M}}
+\newcommand{\calN}{{\mathcal N}}
+\newcommand{\calO}{{\mathcal O}}
+\newcommand{\calP}{{\mathcal P}}
+\newcommand{\calQ}{{\mathcal Q}}
+\newcommand{\calR}{{\mathcal R}}
+\newcommand{\calS}{{\mathcal S}}
+\newcommand{\calT}{{\mathcal T}}
+\newcommand{\calU}{{\mathcal U}}
+\newcommand{\calV}{{\mathcal V}}
+\newcommand{\calW}{{\mathcal W}}
+\newcommand{\calX}{{\mathcal X}}
+\newcommand{\calY}{{\mathcal Y}}
+\newcommand{\calZ}{{\mathcal Z}}
+\newcommand{\OO}{{\mathcal O}}
+
+
+% Math operators
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\trdeg}{tr deg}
+\DeclareMathOperator{\lcm}{lcm}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\Frob}{Frob}
+\DeclareMathOperator{\coker}{coker}
+\DeclareMathOperator{\rk}{rk}
+\DeclareMathOperator{\Char}{char}
+\DeclareMathOperator{\inv}{inv}
+\DeclareMathOperator{\nil}{nil}
+\DeclareMathOperator{\im}{im}
+\DeclareMathOperator{\re}{Re}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\END}{\bf End}
+\DeclareMathOperator{\Lie}{Lie}
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\Ext}{Ext}
+\DeclareMathOperator{\HOM}{\bf Hom}
+\DeclareMathOperator{\Aut}{Aut}
+\DeclareMathOperator{\Gal}{Gal}
+\DeclareMathOperator{\Ind}{Ind}
+\DeclareMathOperator{\Cor}{Cor}
+\DeclareMathOperator{\Res}{Res}
+\DeclareMathOperator{\Norm}{Norm}
+\DeclareMathOperator{\Br}{Br}
+\DeclareMathOperator{\Gr}{Gr}
+\DeclareMathOperator{\cd}{cd}
+\DeclareMathOperator{\scd}{scd}
+\DeclareMathOperator{\Sel}{Sel}
+\DeclareMathOperator{\Cl}{Cl}
+\DeclareMathOperator{\divv}{div}
+\DeclareMathOperator{\ord}{ord}
+\DeclareMathOperator{\Sym}{Sym}
+\DeclareMathOperator{\Div}{Div}
+\DeclareMathOperator{\Pic}{Pic}
+\DeclareMathOperator{\Jac}{Jac}
+\DeclareMathOperator{\Num}{Num}
+\DeclareMathOperator{\Spec}{Spec}
+\DeclareMathOperator{\Proj}{Proj}
+\DeclareMathOperator{\Hilb}{Hilb}
+
+% Commands
+
+\numberwithin{equation}{section}
+\numberwithin{table}{section}
+
+\newcommand{\defi}[1]{\textsf{#1}} % for defined terms
+
+\title{}
+
+\author{Bianca Viray}
+\address{University of Washington, Department of Mathematics, Box 354350, Seattle, WA 98195, USA}
+\email{bviray@uw.edu}
+\urladdr{http://math.washington.edu/\~{}bviray}
+
+\keywords{key1, key2, key3}
+\subjclass[2020]{Primary: XXX Secondary: YYYY}
+
+\begin{document}
+
+
+% \begin{abstract}
+%     % fill in
+% \end{abstract}
+
+% \maketitle
+
+\section{Introduction}
+% Use \texorpdfstring{$math$}{plaintext} in a section or subsection name to address the error message:
+% Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+
+
+
+
+% \include{Background}
+% \include{Techniques1}
+
+
+\begin{bibdiv}
+    \begin{biblist}
+   
+    \end{biblist}
+\end{bibdiv}
+
+\end{document}
+

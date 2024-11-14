@@ -11,4 +11,10 @@
 *.out
 *.toc
 *.vrb
+*.bbl
+*.bcf
+*.blg
+*.brf
+*.xmpdata
+*.xmpi
 comment.cut

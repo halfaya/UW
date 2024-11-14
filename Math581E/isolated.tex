@@ -1,0 +1,259 @@
+\documentclass[12pt, reqno]{amsart}
+
+\usepackage[utf8]{inputenc}
+\usepackage{colorprofiles}
+\usepackage[a-2b,mathxmp]{pdfx}[2018/12/22]
+\hypersetup{pdfstartview=}
+
+% Color comments!
+\usepackage{xcolor}
+\usepackage{fullpage}
+
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=blue, citecolor=blue}
+\usepackage[alphabetic,backrefs,lite]{amsrefs}
+
+\usepackage{amssymb, amsmath, amsthm, amsfonts, mathrsfs, mathtools}
+
+\usepackage{amscd}   % for commutative diagrams
+\usepackage{tikz-cd} % for complicated commutative diagrams
+\usepackage[all,cmtip]{xy}
+
+\usepackage[shortlabels]{enumitem}
+
+
+% Note: if you have problems with the Sha in cyrillic font,
+% change the following ``paragraph'' to \newcommand{\Sha}{{\operatorname{Sha}}}
+\DeclareFontEncoding{OT2}{}{} % to enable usage of cyrillic fonts
+\newcommand{\textcyr}[1]{%
+ {\fontencoding{OT2}\fontfamily{wncyr}\fontseries{m}\fontshape{n}\selectfont #1}}
+\newcommand{\Sha}{{\mbox{\textcyr{Sh}}}}
+% note: cmr might work in place of wncyr
+
+
+\newcommand\commentr[1]{{\color{red} \sf [#1]}}
+\newcommand\commentb[1]{{\color{blue} \sf [#1]}}
+\newcommand\commentm[1]{{\color{magenta} \sf [#1]}}
+
+\newcommand{\bvedit}[1]{{\color{magenta}   #1}}
+\newcommand{\bianca}[1]{{\color{magenta} \sf $\clubsuit\clubsuit\clubsuit$ Bianca: [#1]}}
+\newcommand{\margBi}[1]{\normalsize{{\color{red}\footnote{{\color{magenta}#1}}}{\marginpar[{\color{red}\hfill\tiny\thefootnote$\rightarrow$}]{{\color{red}$\leftarrow$\tiny\thefootnote}}}}}
+\newcommand{\Bianca}[1]{\margBi{(Bianca) #1}}
+
+
+% Theorems
+
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{theorem}[lemma]{Theorem}
+\newtheorem{propo}[lemma]{Proposition}
+\newtheorem{prop}[lemma]{Proposition}
+\newtheorem{cor}[lemma]{Corollary}
+\newtheorem{conj}[lemma]{Conjecture}
+\newtheorem{claim}[lemma]{Claim}
+\newtheorem{claim*}{Claim}
+\newtheorem{rmk}[lemma]{Remark}
+\newtheorem{remark}[lemma]{Remark}
+\newtheorem{thm}[lemma]{Theorem}
+\newtheorem{defn}[lemma]{Definition}
+\newtheorem{example}[lemma]{Example}
+
+%Characters
+\newcommand{\A}{{\mathbb A}}
+\newcommand{\G}{{\mathbb G}}
+\newcommand{\bbH}{{\mathbb H}}
+\newcommand{\PP}{{\mathbb P}}
+\newcommand{\C}{{\mathbb C}}
+\newcommand{\F}{{\mathbb F}}
+\newcommand{\Q}{{\mathbb Q}}
+\newcommand{\R}{{\mathbb R}}
+\newcommand{\Z}{{\mathbb Z}}
+
+\newcommand{\Xbar}{{\overline{X}}}
+\newcommand{\Qbar}{{\overline{\Q}}}
+\newcommand{\Zhat}{{\hat{\Z}}}
+\newcommand{\Zbar}{{\overline{\Z}}}
+\newcommand{\kbar}{{\overline{k}}}
+\newcommand{\Kbar}{{\overline{K}}}
+\newcommand{\ksep}{{k^{\operatorname{sep}}}}
+\newcommand{\Fbar}{{\overline{\F}}}
+
+\newcommand{\kk}{{\mathbf k}}
+
+\newcommand{\pp}{{\mathfrak p}}
+\newcommand{\qq}{{\mathfrak q}}
+\newcommand{\mm}{{\mathfrak m}}
+
+% mathcal characters
+\newcommand{\calA}{{\mathcal A}}
+\newcommand{\calB}{{\mathcal B}}
+\newcommand{\calC}{{\mathcal C}}
+\newcommand{\calD}{{\mathcal D}}
+\newcommand{\calE}{{\mathcal E}}
+\newcommand{\calF}{{\mathcal F}}
+\newcommand{\calG}{{\mathcal G}}
+\newcommand{\calH}{{\mathcal H}}
+\newcommand{\calI}{{\mathcal I}}
+\newcommand{\calJ}{{\mathcal J}}
+\newcommand{\calK}{{\mathcal K}}
+\newcommand{\calL}{{\mathcal L}}
+\newcommand{\calM}{{\mathcal M}}
+\newcommand{\calN}{{\mathcal N}}
+\newcommand{\calO}{{\mathcal O}}
+\newcommand{\calP}{{\mathcal P}}
+\newcommand{\calQ}{{\mathcal Q}}
+\newcommand{\calR}{{\mathcal R}}
+\newcommand{\calS}{{\mathcal S}}
+\newcommand{\calT}{{\mathcal T}}
+\newcommand{\calU}{{\mathcal U}}
+\newcommand{\calV}{{\mathcal V}}
+\newcommand{\calW}{{\mathcal W}}
+\newcommand{\calX}{{\mathcal X}}
+\newcommand{\calY}{{\mathcal Y}}
+\newcommand{\calZ}{{\mathcal Z}}
+\newcommand{\OO}{{\mathcal O}}
+
+
+% Math operators
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\trdeg}{tr deg}
+\DeclareMathOperator{\lcm}{lcm}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\Frob}{Frob}
+\DeclareMathOperator{\coker}{coker}
+\DeclareMathOperator{\rk}{rk}
+\DeclareMathOperator{\Char}{char}
+\DeclareMathOperator{\inv}{inv}
+\DeclareMathOperator{\nil}{nil}
+\DeclareMathOperator{\im}{im}
+\DeclareMathOperator{\re}{Re}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\END}{\bf End}
+\DeclareMathOperator{\Lie}{Lie}
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\Ext}{Ext}
+\DeclareMathOperator{\HOM}{\bf Hom}
+\DeclareMathOperator{\Aut}{Aut}
+\DeclareMathOperator{\Gal}{Gal}
+\DeclareMathOperator{\Ind}{Ind}
+\DeclareMathOperator{\Cor}{Cor}
+\DeclareMathOperator{\Res}{Res}
+\DeclareMathOperator{\Norm}{Norm}
+\DeclareMathOperator{\Br}{Br}
+\DeclareMathOperator{\Gr}{Gr}
+\DeclareMathOperator{\cd}{cd}
+\DeclareMathOperator{\scd}{scd}
+\DeclareMathOperator{\Sel}{Sel}
+\DeclareMathOperator{\Cl}{Cl}
+\DeclareMathOperator{\divv}{div}
+\DeclareMathOperator{\ord}{ord}
+\DeclareMathOperator{\Sym}{Sym}
+\DeclareMathOperator{\Div}{Div}
+\DeclareMathOperator{\Pic}{Pic}
+\DeclareMathOperator{\Jac}{Jac}
+\DeclareMathOperator{\Num}{Num}
+\DeclareMathOperator{\Spec}{Spec}
+\DeclareMathOperator{\Proj}{Proj}
+\DeclareMathOperator{\Hilb}{Hilb}
+
+% Commands
+
+\numberwithin{equation}{section}
+\numberwithin{table}{section}
+
+\newcommand{\defi}[1]{\textsf{#1}} % for defined terms
+
+\title{Low Genus Curves with many Isolated Points}
+
+\author{John Leo}
+\address{Halfaya Research, Bellevue, WA 98006, USA}
+\email{leo@halfaya.org}
+\urladdr{https://www.halfaya.org}
+
+% \keywords{key1, key2, key3}
+% \subjclass[2020]{Primary: XXX Secondary: YYYY}
+
+\begin{document}
+
+
+\begin{abstract}
+abstract
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+
+stuff here
+%\nocite{*}
+
+\section{Background}
+
+We provide here some fundamental definitions and facts. For details
+see \cite{Viray2024}.
+
+Let $k$ be a number field and $\kbar$ be its
+algebraic closure. Let $C/k$ denote a \textit{nice} (smooth,
+projective, and geometrically integral over $k$) curve (variety of
+dimension $1$ over $k$). A \textit{closed point} on $C$ is the Galois
+orbit of a geometric point in $X(\kbar)$, and its \textit{degree} is
+the cardinality of this orbit. A rational point is the special case in
+which the degree is $1$.
+
+The number of rational points on a curve is governed by its genus:
+\begin{enumerate}
+  \item \textbf{Genus 0.} There are either zero or infinitely many
+    rational points.
+  \item \textbf{Genus 1.} The set of ratonal points is finitely
+    generated (Mordell's Theorem). Furthermore the possible
+    torsion groups are completely understood (\cites{Mazur1977, Mazur1978}).
+  \item \textbf{Genus 2.} There are finitely many rational points
+    (Faltings's Theorem (add citation)).
+\end{enumerate}
+
+When $d > 1$, the number of degree $d$ points can be infinite even
+when the genus is $\ge 2$. However all but finitely many of these
+points can be paramerized in one of two ways.
+\begin{enumerate}
+  \item \textbf{$\PP^1$-parameterized points}. A closed point $x \in
+    C$ is $\PP^1$-parameterized if there exists a morphism $\pi : \C \to \PP^1$ with
+    $\deg(\pi) = \deg(x)$ and $\pi(x) \in \PP^1(k)$.
+
+  \item \textbf{AV-parameterized points}. A degree $d$ closed point $x
+    \in C$ is AV-parameterized if there exists a positive rank abelian
+    subvariety $A \subset \Pic^0_C$ such that $[x] + A \subset W^d =
+    \im(\Sym^d_C \to \Pic^d_C)$.
+\end{enumerate}
+
+A point that is neither $PP^1$- nor AV-parameterized is called
+\textit{isolated}, and \cite{Bourdon2019}*{Theorem~4.2} prove that
+there are only finitely many isolated points (considering all possible
+degrees) on a given curve, and furthermore there are infinitely many
+points of degree $d$ iff there exists a degree $d$
+$\PP^1$-parameterized point.  These are referenced as Corollary~4.3
+and Theorem~4.4 of \cite{Viray2024}.
+
+Given that any curve has only finitely many isolated points, a natural
+question to ask is how to find specific curves with large numbers of
+such points. Since the concept of isolated point is a relatively new
+one, introduced in \cite{Bourdon2019}, we first consider the rational
+(degree $1$) special case, which has been studied for a longer period
+of time.
+
+
+\section{Curves with Many Rational Points}
+
+xxx
+
+\subsection{Genus \texorpdfstring{$< 2$}{< 2}}
+
+xxx
+
+\subsection{Genus \texorpdfstring{$\ge 2$}{> 2}}
+
+xxx
+
+\bibliography{isolated.bib}
+
+\end{document}
+
