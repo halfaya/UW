@@ -171,21 +171,24 @@
 \urladdr{https://www.halfaya.org}
 
 % \keywords{key1, key2, key3}
-% \subjclass[2020]{Primary: XXX Secondary: YYYY}
+\subjclass[2020]{11G30}
 
 \begin{document}
 
 
 \begin{abstract}
-abstract
+Bourdon et al.\ \cite{Bourdon2019} in 2019 introduced the concept of
+\textit{isolated points} on varieties, a generalization of rational
+points, and proved that any ``nice'' curve over a number field has
+finitely many isolated points. We examine the state of the art on
+finding low genus curves with a large number of isolated points.
 \end{abstract}
 
 \maketitle
 
 \section{Introduction}
 
-stuff here
-%\nocite{*}
+Expand the abstract a bit here.
 
 \section{Background}
 
@@ -204,9 +207,11 @@ The number of rational points on a curve is governed by its genus:
 \begin{enumerate}
   \item \textbf{Genus 0.} There are either zero or infinitely many
     rational points.
-  \item \textbf{Genus 1.} The set of ratonal points is finitely
-    generated (Mordell's Theorem). Furthermore the possible
-    torsion groups are completely understood (\cites{Mazur1977, Mazur1978}).
+  \item \textbf{Genus 1.} The set of ratonal points is a finitely
+    generated abelian group (the Mordell-Weil Theorem). Furthermore the possible
+    torsion groups are completely understood for a curve over $\Q$
+    (\cites{Mazur1977, Mazur1978}) and are known to be bounded in
+    general (\cite{Merel1996}).
   \item \textbf{Genus 2.} There are finitely many rational points
     (Faltings's Theorem (add citation)).
 \end{enumerate}
@@ -225,7 +230,7 @@ points can be paramerized in one of two ways.
     \im(\Sym^d_C \to \Pic^d_C)$.
 \end{enumerate}
 
-A point that is neither $PP^1$- nor AV-parameterized is called
+A point that is neither $\PP^1$- nor AV-parameterized is called
 \textit{isolated}, and \cite{Bourdon2019}*{Theorem~4.2} prove that
 there are only finitely many isolated points (considering all possible
 degrees) on a given curve, and furthermore there are infinitely many
@@ -235,7 +240,7 @@ and Theorem~4.4 of \cite{Viray2024}.
 
 Given that any curve has only finitely many isolated points, a natural
 question to ask is how to find specific curves with large numbers of
-such points. Since the concept of isolated point is a relatively new
+such points. Since the concept of isolated points is a relatively new
 one, introduced in \cite{Bourdon2019}, we first consider the rational
 (degree $1$) special case, which has been studied for a longer period
 of time.
@@ -243,13 +248,25 @@ of time.
 
 \section{Curves with Many Rational Points}
 
-xxx
+As noted above, finiteness of the number of rational points is controlled by the genus.
 
 \subsection{Genus \texorpdfstring{$< 2$}{< 2}}
 
-xxx
+A curve of genus 0 either has zero or infinitely many rational points,
+so this case is uninteresting.
 
-\subsection{Genus \texorpdfstring{$\ge 2$}{> 2}}
+For the genus 1 case, by the Mordell-Weil Theorem the set of rational
+points is a finitely-generated abelian group and thus finite iff the
+rank of the group is zero. The number of rational points is then equal
+to the size of the torsion group. In the case $k=\Q$, Mazur's theorem
+states that the largest such group is $\Z/2\Z \times \Z/8\Z$ of order
+$16$. There are currently three such curves in LMFDB (\cite{lmfdb}),
+which can be found by searching for ``Elliptic Curves over $\Q$'' with
+the given rank and torsion.
+
+For arbitrary nunber fields, the situation is more complicated. 
+
+\subsection{Genus \texorpdfstring{$\ge 2$}{≥ 2}}
 
 xxx
 
