@@ -205,15 +205,15 @@ which the degree is $1$.
 
 The number of rational points on a curve is governed by its genus:
 \begin{enumerate}
-  \item \textbf{Genus 0.} There are either zero or infinitely many
+  \item \textbf{Genus $0$.} There are either zero or infinitely many
     rational points.
-  \item \textbf{Genus 1.} The set of ratonal points is a finitely
+  \item \textbf{Genus $1$.} The set of ratonal points is a finitely
     generated abelian group (the Mordell-Weil Theorem). Furthermore the possible
     torsion groups are completely understood for a curve over $\Q$
     (\cites{Mazur1977, Mazur1978}) and are known to be bounded in
     general (\cite{Merel1996}).
-  \item \textbf{Genus 2.} There are finitely many rational points
-    (Faltings's Theorem (add citation)).
+  \item \textbf{Genus $\ge 2$.} There are finitely many rational points
+    (Faltings's Theorem (\cite{Faltings1983})).
 \end{enumerate}
 
 When $d > 1$, the number of degree $d$ points can be infinite even
@@ -232,11 +232,16 @@ points can be paramerized in one of two ways.
 
 A point that is neither $\PP^1$- nor AV-parameterized is called
 \textit{isolated}, and \cite{Bourdon2019}*{Theorem~4.2} prove that
-there are only finitely many isolated points (considering all possible
-degrees) on a given curve, and furthermore there are infinitely many
-points of degree $d$ iff there exists a degree $d$
-$\PP^1$-parameterized point.  These are referenced as Corollary~4.3
-and Theorem~4.4 of \cite{Viray2024}.
+there are only finitely many isolated points (of any degree) on a
+given curve, and furthermore there are infinitely many points of
+degree $d$ iff there exists a degree $d$ $\PP^1$-parameterized point.
+These are referenced as Corollary~4.3 and Theorem~4.4 of
+\cite{Viray2024}.
+
+Furthermore a closed point $x \in C$ is called \textit{sporadic} if
+there are only finitely many closed points of $C$ with degree at most
+$\deg(x)$. By \cite{Bourdon2019}*{Theorem~4.2}, every sporadic point
+must also be isolated; however, the converse need not hold.
 
 Given that any curve has only finitely many isolated points, a natural
 question to ask is how to find specific curves with large numbers of
@@ -264,11 +269,49 @@ $16$. There are currently three such curves in LMFDB (\cite{lmfdb}),
 which can be found by searching for ``Elliptic Curves over $\Q$'' with
 the given rank and torsion.
 
-For arbitrary nunber fields, the situation is more complicated. 
+For arbitrary nunber fields, the situation is more
+complicated. \cite{Parent1999} proves that the size of the torsion
+group is bounded by an exponential in the degree $d$ of the field
+extension. The bound is conjectured to be polynomial in $d$; see
+\cite{Clark2018}.
+
+For quadratic extensions, the combined work of \cites{Kamienny1992a,
+  Kamienny1992b, Kenku1988} shows that the torsion group has size at
+most 24 and in this case must be $\Z/2\Z \times \Z/12\Z$. For cubic
+extensions, \cite{Derickx2021} proves that the largest possible
+torsion group is $\Z/2\Z \times \Z/14\Z$ of size 28. Less is known
+about higher degress. See the introduction to \cite{Genao2022} for an
+overview.
+
+As far as specific examples go, searching LMFDB for ``Elliptic curves over
+$\Q(\alpha)$'' of rank $0$ and sorting by torsion, one finds the largest
+group to have order 37, followed by 36, 32, and three curves with
+28. The degree of the minimal polynomial for these examples ranges
+from 4 to 6. There are two curves in the database over quadradic
+fields with torsion order 24, one over $\Q(\sqrt{6})$ and the other
+over $\Q(\sqrt{-15})$. There is one cubic curve in the datebase over a
+cubic field with torsion order 28.
 
 \subsection{Genus \texorpdfstring{$\ge 2$}{≥ 2}}
 
-xxx
+By Faltings's Theorem there are only finitely many rational points. For
+genus 2 the curve with the most such points has only 39. However Stoll
+(\cite{Muller2016}) exhibits a curve with at least 642 rational
+points, which is apparently still the record. The paper describes how
+to find such points for a given curve, but does not say how to find
+curves with likely many points. The referenced announcement
+\cite{Stoll2008} merely states ``in the course of a systematic search
+for curves with many rational points in several families constructed
+by Noam Elkies, I discovered the following curve of genus 2''. More
+details can be found in \cite{Stoll2015}.
+
+For higher genera, \cite{Caporaso1995} is a good, if dated, reference.
+
+\section{Isolated and Sporadic Points}
+
+As noted above, isolated and sporadic points are relatively new
+concepts. Most work so far related to them appears to focus on simply
+finding the points in the first place.
 
 \bibliography{isolated.bib}
 
