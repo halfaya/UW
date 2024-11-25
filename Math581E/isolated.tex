@@ -175,20 +175,28 @@
 
 \begin{document}
 
-
 \begin{abstract}
 Bourdon et al.\ \cite{Bourdon2019} in 2019 introduced the concept of
 \textit{isolated points} on varieties, a generalization of rational
 points, and proved that any ``nice'' curve over a number field has
-finitely many isolated points. We examine the state of the art on
-finding low genus curves with a large number of isolated points.
+finitely many isolated points. We examine the state of the art related
+to low genus curves with a large number of isolated points.
 \end{abstract}
 
 \maketitle
 
 \section{Introduction}
 
-Expand the abstract a bit here.
+Bourdon et al.\ \cite{Bourdon2019} in 2019 introduced the concept of
+\textit{isolated points} on varieties, a generalization of rational
+points, and proved that any ``nice'' curve over a number field has
+finitely many isolated points. Natural question to ask are how to find
+specific curves (starting with lower genera) with large numbers of
+such points, and how to count the points and/or determine them
+explicity. This report surveys work that has been done for the special
+case of rational points, as well as more recent work on the general
+case. In its current state the survey mostly references the papers and
+does not attempt to summarize the techniques used.
 
 \section{Background}
 
@@ -287,7 +295,7 @@ As far as specific examples go, searching LMFDB for ``Elliptic curves over
 $\Q(\alpha)$'' of rank $0$ and sorting by torsion, one finds the largest
 group to have order 37, followed by 36, 32, and three curves with
 28. The degree of the minimal polynomial for these examples ranges
-from 4 to 6. There are two curves in the database over quadradic
+from 3 to 6. There are two curves in the database over quadradic
 fields with torsion order 24, one over $\Q(\sqrt{6})$ and the other
 over $\Q(\sqrt{-15})$. There is one cubic curve in the datebase over a
 cubic field with torsion order 28.
@@ -295,7 +303,7 @@ cubic field with torsion order 28.
 \subsection{Genus \texorpdfstring{$\ge 2$}{≥ 2}}
 
 By Faltings's Theorem there are only finitely many rational points. For
-genus 2 the curve with the most such points has only 39. However Stoll
+genus 2 the curve with the most such points in LMFDB has only 39. However Stoll
 (\cite{Muller2016}) exhibits a curve with at least 642 rational
 points, which is apparently still the record. The paper describes how
 to find such points for a given curve, but does not say how to find
@@ -310,8 +318,49 @@ For higher genera, \cite{Caporaso1995} is a good, if dated, reference.
 \section{Isolated and Sporadic Points}
 
 As noted above, isolated and sporadic points are relatively new
-concepts. Most work so far related to them appears to focus on simply
-finding the points in the first place.
+concepts. Work so far has concentrated on the modular curves $X_0(N)$
+and $X_1(N)$. These have the advantage that their points correspond to
+isomorphism classes of elliptic curves, and thus concretely to
+$j$-invariants. CM and non-CM cases are distinguished as they
+require different techniques.
+
+Bourdon and collaborators focus on $X_1(N)$, starting with
+\cite{Bourdon2019}. Section~8 of this paper focuses on classifying
+non-cuspidal non-CM isolated points with rational $j$-invariant. The
+conditions on the $j$-invariant of curves corresponding to such
+isolated points can then be used to search LMFDB for appropriate
+elliptic curves, which then correspond to isolated points.
+
+\cite{Bourdon2021} focus on conditions for sporadic points and
+considers both CM and non-CM cases.
+
+\cite{Bourdon2024} focus on isolated points of odd degree, and
+proves (Theorem~2) that such points can have only two specific (for
+the non-CM case) or three specific (for the CM case)
+$j$-invariants. Only for the two non-CM cases have isolated points
+been verified to exist.
+
+Finally \cite{Bourdon2025} develop an algorithm to determine whether a
+non-CM rational $j$-invariant is isolated. Running this on LMFDB they
+determine, given restrictions on the conductor, that at most four such
+rational $j$-invariants exist (Theorem~2); they are also known to
+exist. The authors conjecture that these are the only possible
+$j$-invariants (removing the conductor restrictions); the case for odd
+degree was already proven in \cite{Bourdon2024}, and \cite{Ejder2022}
+handles the case $X_1(\ell^n)$ with $\ell$ prime.
+
+\cite{Box2023} focus on $X_0(N)$ with several specific values of $N$,
+and explicit calculation of isolated points. No more than 4 isolated
+points are demonstrated for any example curve.  \cite{Khawaja2024}
+provide criteria for determining isolated points of more general
+curves, but do not attempt to find curves with many isolated
+points.
+
+As of this writing (November 2024), the LMFDB references isolated
+points only in the beta version \cite{lmfdb_beta} in a new section
+``Modular Curves''; there is a text box ``Isolated'' in the section
+``Modular curve low-degree point search results''. However isolated
+points are not yet computed, so no information can be retrieved.
 
 \bibliography{isolated.bib}
 
